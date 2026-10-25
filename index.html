@@ -1,5 +1,11 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Panduan Pegawai: buku panduan kepegawaian untuk perusahaan dan lembaga pendidikan di Indonesia, mengacu pada regulasi ketenagakerjaan per Oktober 2026. Disusun oleh Ahmad Dawami.">
+<meta name="theme-color" content="#0e2b23">
 <title>Buku Panduan Kepegawaian</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..500&display=swap">
@@ -43,6 +49,9 @@
 :root[data-size="s"]{--fs:1rem} :root[data-size="l"]{--fs:1.1875rem}
 
 *{box-sizing:border-box}
+html,body{margin:0}
+[hidden]{display:none!important}
+img,svg{max-width:100%}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
 body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.6;font-feature-settings:"cv11","ss01";-webkit-font-smoothing:antialiased}
@@ -57,7 +66,7 @@ button{font:inherit;color:inherit}
 
 /* ---------- Bilah progres & bilah atas ---------- */
 .progress-bar{position:fixed;left:0;top:env(safe-area-inset-top, 0px);height:3px;width:0;background:var(--gold);z-index:80;transition:width .1s linear}
-.topbar{position:sticky;top:env(safe-area-inset-top, 0px);z-index:60;background:color-mix(in srgb, var(--paper) 92%, transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.topbar{position:sticky;top:env(safe-area-inset-top, 0px);z-index:60;background:var(--paper);background:color-mix(in srgb, var(--paper) 92%, transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
 .topbar-inner{max-width:1320px;margin:0 auto;height:var(--bar-h);display:flex;align-items:center;gap:12px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700;letter-spacing:-.01em;white-space:nowrap}
 .monogram{width:30px;height:30px;border-radius:8px;background:var(--green);color:var(--gold-on-green);display:grid;place-items:center;font-size:.72rem;font-weight:800;letter-spacing:.02em;border:1px solid var(--gold-line)}
@@ -334,7 +343,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 @keyframes flash{0%,30%{background:var(--gold-soft);box-shadow:0 0 0 6px var(--gold-soft)}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
 
 /* ---------- Bilah bawah (ponsel/tablet) ---------- */
-.bottombar{position:fixed;z-index:65;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.bottombar{position:fixed;z-index:65;left:0;right:0;bottom:0;background:var(--paper);background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .bottombar button{display:grid;justify-items:center;gap:2px;padding:6px 4px;border:0;background:transparent;border-radius:10px;font-size:.7rem;font-weight:600;color:var(--muted);cursor:pointer}
 .bottombar button:active,.bottombar button:hover{background:var(--bg-alt);color:var(--ink)}
 .bottombar button[disabled]{opacity:.35;cursor:default}
@@ -342,6 +351,9 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 .totop{position:fixed;z-index:60;right:calc(24px + env(safe-area-inset-right, 0px));bottom:calc(24px + env(safe-area-inset-bottom, 0px));width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow);display:none;place-items:center;cursor:pointer;color:var(--ink)}
 @media (min-width:1100px){.totop.show{display:grid}}
 </style>
+</head>
+<body>
+
 
 <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
 
@@ -2629,3 +2641,6 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
   prog();
 })();
 </script>
+
+</body>
+</html>
