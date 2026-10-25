@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="description" content="Panduan Pegawai: buku panduan kepegawaian untuk perusahaan dan lembaga pendidikan di Indonesia, mengacu pada regulasi ketenagakerjaan per Oktober 2026. Disusun oleh Ahmad Dawami.">
 <meta name="theme-color" content="#0e2b23">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Buku Panduan Kepegawaian</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -350,6 +352,129 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 @media (min-width:1100px){.bottombar{display:none}}
 .totop{position:fixed;z-index:60;right:calc(24px + env(safe-area-inset-right, 0px));bottom:calc(24px + env(safe-area-inset-bottom, 0px));width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow);display:none;place-items:center;cursor:pointer;color:var(--ink)}
 @media (min-width:1100px){.totop.show{display:grid}}
+
+/* ================= Mobile-first: tanpa header, dock bawah, bottom sheet ================= */
+:root{--lh:1.72;--dock-h:64px;--dock-gap:10px}
+:root[data-lh="tight"]{--lh:1.65} :root[data-lh="loose"]{--lh:1.85}
+.reader{line-height:var(--lh)}
+.reader h3{scroll-margin-top:calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 16px)}
+html.no-progress .progress-bar{display:none}
+.bottombar{display:none!important}
+.menu-btn{display:none!important}
+
+@media (max-width:1099px){
+  .gutter{padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px))}
+  .topbar{display:none}
+  .sidebar{display:none!important}
+  body::before{background:var(--paper)}
+  html.at-cover body::before{background:var(--green)}
+  .cover-inner{padding-top:calc(env(safe-area-inset-top, 0px) + clamp(40px,9vw,88px))}
+  section.bab,.reader h3{scroll-margin-top:calc(env(safe-area-inset-top, 0px) + 20px)}
+  .reader{padding-bottom:calc(var(--dock-h) + var(--dock-gap) + env(safe-area-inset-bottom, 0px) + 40px)}
+  .layout{padding-top:0;gap:0}
+  .colophon{padding-top:20px}
+  .totop{display:none!important}
+}
+@media (max-width:420px){ .reader{--fs-min:1rem} }
+
+/* Dock */
+.dock{position:fixed;z-index:75;left:max(12px, env(safe-area-inset-left, 0px));right:max(12px, env(safe-area-inset-right, 0px));bottom:calc(var(--dock-gap) + env(safe-area-inset-bottom, 0px));height:var(--dock-h);max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 6px;border-radius:20px;background:var(--green);background:color-mix(in srgb,var(--green) 94%,transparent);-webkit-backdrop-filter:saturate(1.3) blur(14px);backdrop-filter:saturate(1.3) blur(14px);border:1px solid var(--gold-line);box-shadow:0 10px 30px -12px rgba(6,20,15,.55);transition:transform .28s cubic-bezier(.2,.7,.2,1),opacity .2s}
+.dock.hide{transform:translateY(calc(100% + var(--dock-gap) + env(safe-area-inset-bottom, 0px) + 8px));opacity:0;pointer-events:none}
+.dock button{position:relative;min-width:44px;min-height:52px;display:grid;justify-items:center;align-content:center;gap:3px;border:0;background:transparent;color:var(--on-green-muted);font-size:.69rem;font-weight:600;letter-spacing:.01em;cursor:pointer;border-radius:14px;-webkit-tap-highlight-color:transparent}
+.dock button .pill{display:grid;place-items:center;width:52px;height:30px;border-radius:999px;transition:background .2s}
+.dock button .icon{width:21px;height:21px;stroke-width:1.9}
+.dock button[aria-current="true"],.dock button.active{color:var(--gold-on-green)}
+.dock button[aria-current="true"] .pill,.dock button.active .pill{background:rgba(217,184,101,.14)}
+.dock button:focus-visible{outline:2px solid var(--gold-on-green);outline-offset:-2px}
+@media (min-width:1100px){.dock{display:none}}
+
+/* Sheet umum */
+.backdrop{z-index:85}
+body.sheet-open .backdrop{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:90;left:0;right:0;bottom:0;max-height:min(86vh,860px);max-height:min(86dvh,860px);display:flex;flex-direction:column;background:var(--paper);border-radius:24px 24px 0 0;border:1px solid var(--line);border-bottom:0;box-shadow:0 -20px 60px -20px rgba(0,0,0,.35);transform:translateY(102%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.75,.2,1),visibility 0s linear .32s;padding-bottom:env(safe-area-inset-bottom, 0px);padding-left:env(safe-area-inset-left, 0px);padding-right:env(safe-area-inset-right, 0px)}
+.sheet.open{transform:translateY(0);visibility:visible;transition:transform .32s cubic-bezier(.2,.75,.2,1),visibility 0s}
+.sheet.dragging{transition:none}
+.sheet-grip{display:grid;place-items:center;height:22px;cursor:grab;touch-action:none;flex:none}
+.sheet-grip::before{content:"";width:40px;height:5px;border-radius:999px;background:var(--line-2)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 20px 12px;flex:none;touch-action:none}
+.sheet-head h2{margin:0;font-size:1.15rem;font-weight:750;letter-spacing:-.015em;color:var(--ink)}
+.sheet-head p{margin:2px 0 0;font-size:.8rem;color:var(--muted)}
+.icon-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;flex:none}
+.icon-btn:hover{background:var(--bg-alt)}
+.sheet-body{overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 20px 24px;flex:1;min-height:0}
+@media (min-width:1100px){
+  .sheet{left:50%;right:auto;bottom:auto;top:10vh;width:min(600px,calc(100vw - 48px));max-height:80vh;border-radius:22px;border:1px solid var(--line);transform:translate(-50%,10px);opacity:0;transition:opacity .18s,transform .18s,visibility 0s linear .18s;padding-bottom:0}
+  .sheet.open{transform:translate(-50%,0);opacity:1;transition:opacity .18s,transform .18s,visibility 0s}
+  .sheet-grip{display:none}
+  .sheet-head{padding-top:18px}
+}
+
+/* Daftar isi (sheet) */
+.toc-tools{position:sticky;top:0;z-index:2;background:var(--paper);padding:2px 0 12px;display:grid;gap:10px}
+.toc-tools .search-wrap .icon{top:13px}
+.toc-tools input{width:100%;height:46px;padding:0 14px 0 38px;border:1px solid var(--line-2);border-radius:14px;background:var(--bg);color:var(--ink);font:inherit;font-size:1rem}
+.toc-tools input:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px color-mix(in srgb,var(--emerald) 22%,transparent)}
+.mini-prog{display:flex;align-items:center;gap:12px;font-size:.8rem;color:var(--muted)}
+.mini-prog .track{flex:1;height:4px;border-radius:999px;background:var(--bg-alt);overflow:hidden}
+.mini-prog .fill{height:100%;width:0;background:linear-gradient(90deg,var(--emerald),var(--gold))}
+.mini-prog b{color:var(--ink);font-variant-numeric:tabular-nums}
+#tocSheetList{list-style:none;margin:0;padding:0}
+#tocSheetList .g{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:16px 4px 6px}
+#tocSheetList .ch{border-radius:14px}
+#tocSheetList .ch.current{background:var(--emerald-soft)}
+#tocSheetList .row{display:flex;align-items:stretch}
+#tocSheetList .row a{flex:1;min-width:0;display:grid;grid-template-columns:2.4rem minmax(0,1fr);align-items:center;gap:4px;min-height:48px;padding:6px 6px 6px 10px;color:var(--ink);text-decoration:none;font-size:.95rem;font-weight:550;line-height:1.3}
+#tocSheetList .row a span:first-child{font-size:.78rem;font-weight:750;color:var(--gold-ink);font-variant-numeric:tabular-nums}
+#tocSheetList .ch.current .row a{color:var(--emerald)}
+#tocSheetList .exp{width:48px;min-height:48px;border:0;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:12px}
+#tocSheetList .exp .icon{transition:transform .2s;width:18px;height:18px}
+#tocSheetList .exp[aria-expanded="true"] .icon{transform:rotate(180deg)}
+#tocSheetList .subs{list-style:none;margin:0 0 6px;padding:0 0 4px 3.4rem}
+#tocSheetList .subs a{display:flex;gap:10px;min-height:40px;align-items:center;padding:4px 10px 4px 0;color:var(--ink-body);text-decoration:none;font-size:.87rem;line-height:1.35;border-top:1px solid var(--line)}
+#tocSheetList .subs a span{flex:none;min-width:2.6rem;color:var(--muted);font-size:.78rem;font-weight:650;font-variant-numeric:tabular-nums}
+
+/* Pencarian (sheet) */
+.sheet-search{max-height:min(90vh,900px);max-height:min(90dvh,900px);height:min(90vh,900px);height:min(90dvh,900px)}
+@media (min-width:1100px){.sheet-search{height:auto}}
+.sheet-search .search-top{padding:0 20px 12px;border-bottom:1px solid var(--line);gap:10px}
+.sheet-search .field-q{flex:1;min-width:0;position:relative}
+.sheet-search .field-q .icon{position:absolute;left:13px;top:13px;width:19px;height:19px;color:var(--muted)}
+.sheet-search #q{width:100%;height:46px;padding:0 14px 0 40px;border:1px solid var(--line-2);border-radius:14px;background:var(--bg);font-size:1rem}
+.sheet-search #q:focus{border-color:var(--emerald);box-shadow:0 0 0 3px color-mix(in srgb,var(--emerald) 22%,transparent)}
+.sheet-search .search-meta{border-bottom:0;padding:10px 20px 4px}
+.sheet-search #results{padding:4px 12px 20px;flex:1;min-height:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:6px 8px 0}
+.chips button{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink-body);font-size:.85rem;font-weight:550;cursor:pointer}
+.chips button:hover{border-color:var(--emerald);color:var(--emerald)}
+
+/* Pengaturan (sheet) */
+.set-group{padding:14px 0;border-top:1px solid var(--line)}
+.set-group:first-child{border-top:0;padding-top:4px}
+.set-group h3{margin:0 0 10px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.segm{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;border-radius:14px;background:var(--bg-alt)}
+.segm button{min-height:44px;border:0;border-radius:11px;background:transparent;color:var(--ink-body);font-weight:600;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.segm button .icon{width:17px;height:17px}
+.segm button[aria-pressed="true"]{background:var(--paper);color:var(--emerald);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px -4px rgba(0,0,0,.2)}
+.segm .aa-s{font-size:.8rem}.segm .aa-m{font-size:.95rem}.segm .aa-l{font-size:1.12rem}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px}
+.switch-row span{font-size:.92rem;color:var(--ink)}
+.switch-row small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+.switch{position:relative;width:50px;height:30px;flex:none;border-radius:999px;border:0;background:var(--line-2);cursor:pointer;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--emerald)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+.preview{margin-top:12px;padding:14px 16px;border-radius:14px;background:var(--bg);border:1px dashed var(--line-2);font-size:var(--fs);line-height:var(--lh);color:var(--ink-body)}
+.set-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.set-actions button{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:.88rem;cursor:pointer}
+
+/* Toast lanjut membaca */
+.toast{position:fixed;z-index:76;left:max(12px, env(safe-area-inset-left, 0px));right:max(12px, env(safe-area-inset-right, 0px));bottom:calc(var(--dock-h) + var(--dock-gap) * 2 + env(safe-area-inset-bottom, 0px));max-width:520px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;border-radius:16px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);font-size:.86rem;color:var(--ink-body);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:none;pointer-events:auto}
+.toast span{flex:1;min-width:0}
+.toast b{color:var(--ink)}
+.toast .go{min-height:40px;padding:0 14px;border:0;border-radius:11px;background:var(--emerald);color:var(--paper);font-weight:650;cursor:pointer;white-space:nowrap}
+.toast .x{width:40px;height:40px;border:0;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:10px}
+@media (min-width:1100px){.toast{bottom:24px;left:auto;right:calc(84px + env(safe-area-inset-right, 0px));margin:0;width:420px}}
 </style>
 </head>
 <body>
@@ -359,11 +484,10 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
 <header class="topbar">
   <div class="topbar-inner gutter">
-    <button class="tb-btn icon-only menu-btn" id="menuBtn" type="button" aria-label="Buka daftar isi" aria-controls="sidebar" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
     <a class="brand" href="#top"><span class="monogram">PP</span><span class="brand-name">Panduan Pegawai</span></a>
     <div class="now" aria-live="polite"><span id="nowNum">Sampul</span><b id="nowTitle">Panduan Pegawai</b></div>
     <button class="tb-btn search-btn" id="searchBtn" type="button" aria-label="Cari isi buku"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><span class="lbl">Cari</span><kbd>/</kbd></button>
-    <button class="tb-btn icon-only" id="sizeBtn" type="button" aria-label="Ubah ukuran huruf" title="Ukuran huruf"><svg class="icon" viewBox="0 0 24 24"><path d="M4 18 9 6l5 12M5.8 14h6.4M15 18l3-7 3 7M15.9 16h4.2"/></svg></button>
+    <button class="tb-btn icon-only" id="settingsBtn" type="button" aria-label="Pengaturan membaca" title="Pengaturan membaca"><svg class="icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
   </div>
 </header>
 
@@ -419,7 +543,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 <div class="layout gutter">
   <aside class="sidebar" id="sidebar" aria-label="Daftar isi">
     <div class="sidebar-inner" id="sidebarInner">
-      <div class="side-head"><strong>Daftar isi</strong><button class="tb-btn icon-only side-close" id="sideClose" type="button" aria-label="Tutup daftar isi"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <div class="side-head"><strong>Daftar isi</strong></div>
       <div class="readprog"><div class="row"><span>Progres membaca</span><b id="progPct">0%</b></div><div class="track"><div class="fill" id="progFill"></div></div></div>
       <div class="search-wrap"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="search" id="tocSearch" placeholder="Saring bab…" aria-label="Saring bab"></div>
       <nav id="toc"><ol id="tocList"></ol></nav>
@@ -451,7 +575,8 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <thead><tr><th>Versi</th><th>Tanggal</th><th>Perubahan</th></tr></thead>
         <tbody>
           <tr><td>1.0</td><td>25 Okt 2026</td><td>Penyusunan awal berdasarkan regulasi per Oktober 2026</td></tr>
-          <tr><td>1.2</td><td>25 Okt 2026</td><td>Penambahan Bab 10 Komponen Gaji dan Tunjangan, contoh slip gaji, dan kalkulator gaji bersih</td></tr>
+          <tr><td>1.3</td><td>25 Okt 2026</td><td>Penambahan Bab 7 Kehadiran, Bab 15 Kesehatan dan Lingkungan Kerja, Bab 17 Etika Lanjutan, Bab 22 Komunikasi dan Budaya Kerja, Bab 27 Panduan untuk Atasan, Bab 28 Administrasi Kepegawaian, Bab 30 Perlindungan Anak dan Integritas Akademik, serta templat 13–20</td></tr>
+          <tr><td>1.2</td><td>25 Okt 2026</td><td>Penambahan Bab 11 Komponen Gaji dan Tunjangan, contoh slip gaji, dan kalkulator gaji bersih</td></tr>
           <tr><td>1.1</td><td>25 Okt 2026</td><td>Penambahan pekerja khusus, karier dan perjalanan dinas, pensiun, TI dan AI, HKI, pelaporan pelanggaran, keadaan darurat, mogok kerja, sanksi bagi lembaga, pendalaman lembaga pendidikan, templat, struktur organisasi, tabel UMP 2026, dan daftar kontak</td></tr>
           <tr><td>[ 2.0 ]</td><td>[ ... ]</td><td>[ Penyesuaian setelah UU Pelindungan Ketenagakerjaan dan PP turunannya terbit ]</td></tr>
         </tbody>
@@ -516,7 +641,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <h3>1.4 Cara menggunakan</h3>
-      <p>Bab 2 dan 3 memuat dasar hukum dan rekrutmen. Bab 4 sampai 8 membahas hubungan kerja, kelompok pekerja khusus, waktu kerja, cuti, dan karier. Bab 9 sampai 13 membahas upah, komponen gaji dan tunjangan, jaminan sosial, pensiun, dan K3. Bab 14 sampai 18 mengatur perilaku, teknologi, pelaporan, dan kinerja. Bab 19 sampai 22 mengatur disiplin, PHK, perselisihan, dan sanksi bagi lembaga. Bab 23 khusus untuk lembaga pendidikan. Lampiran memuat kalkulator, templat surat, contoh struktur organisasi, tabel UMP 2026, daftar kontak, daftar periksa transisi, kalender kepatuhan, tanya jawab, dan glosarium.</p>
+      <p>Bab 2 dan 3 memuat dasar hukum dan rekrutmen. Bab 4 sampai 9 membahas hubungan kerja, kelompok pekerja khusus, waktu kerja, kehadiran, cuti, dan karier. Bab 10 sampai 15 membahas upah, komponen gaji dan tunjangan, jaminan sosial, pensiun, K3, serta kesehatan dan lingkungan kerja. Bab 16 sampai 22 mengatur kode etik, etika lanjutan, teknologi, pencegahan kekerasan, pelaporan pelanggaran, kinerja, serta komunikasi dan budaya kerja. Bab 23 sampai 26 mengatur disiplin, PHK, perselisihan, dan sanksi bagi lembaga. Bab 27 dan 28 berisi panduan untuk atasan dan administrasi kepegawaian. Bab 29 dan 30 khusus untuk lembaga pendidikan. Lampiran memuat kalkulator, templat surat, contoh struktur organisasi, tabel UMP 2026, daftar kontak, daftar periksa transisi, kalender kepatuhan, tanya jawab, dan glosarium.</p>
     </section>
 
     <!-- ============ BAB 2 ============ -->
@@ -740,12 +865,73 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       <p>Kerja dari rumah atau jam fleksibel dapat diterapkan berdasarkan kesepakatan tertulis yang memuat target kerja, jam ketersediaan, perangkat, keamanan data, dan penggantian biaya. Total jam kerja tetap tunduk pada batas 40 jam per minggu.</p>
     </section>
 
+    <!-- ============ BARU: KEHADIRAN ============ -->
+    <section class="bab" id="kehadiran" data-title="Kehadiran & presensi" data-group="Bagian II · Hubungan kerja">
+      <div class="bab-head"><span class="bab-no">Bab 7</span><h2>Kehadiran dan presensi</h2></div>
+      <h3>7.1 Jam masuk dan pulang</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Unit</th><th>Hari kerja</th><th>Jam kerja</th><th>Istirahat</th></tr></thead>
+        <tbody>
+          <tr><td>Kantor/administrasi</td><td>[Senin–Jumat]</td><td>[08.00–16.00]</td><td>[12.00–13.00]</td></tr>
+          <tr><td>Pendidik (sekolah)</td><td>[Senin–Jumat]</td><td>[07.00–15.00]</td><td>Sesuai jadwal pelajaran</td></tr>
+          <tr><td>Layanan bergilir (keamanan, asrama)</td><td>Sesuai jadwal shift</td><td>[3 shift × 8 jam]</td><td>30 menit per shift</td></tr>
+        </tbody>
+      </table></div>
+      <p>Jam kerja ditetapkan pimpinan dan diumumkan tertulis. Total jam kerja tetap tunduk pada batas 40 jam per minggu (Bab 6).</p>
+
+      <h3>7.2 Presensi</h3>
+      <ul>
+        <li>Setiap pegawai mencatat presensi sendiri saat datang dan pulang melalui [mesin sidik jari / aplikasi / kartu]. Menitipkan atau mencatatkan presensi orang lain adalah pelanggaran disiplin.</li>
+        <li>Lupa mencatat presensi diperbaiki melalui formulir koreksi yang disetujui atasan paling lambat 2 hari kerja kemudian.</li>
+        <li>Data sidik jari dan wajah termasuk data pribadi spesifik. Lembaga menjelaskan tujuan penggunaannya, menyimpannya dengan aman, dan tidak memakainya untuk keperluan lain <span class="ps">UU 27/2022</span>.</li>
+        <li>Presensi berbasis lokasi hanya aktif pada jam kerja dan tidak melacak pegawai di luar jam kerja.</li>
+      </ul>
+
+      <h3>7.3 Keterlambatan dan pulang lebih awal</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Keadaan</th><th>Ketentuan</th></tr></thead>
+        <tbody>
+          <tr><td>Terlambat sampai [10] menit</td><td>Toleransi, paling banyak [3] kali per bulan</td></tr>
+          <tr><td>Terlambat melewati toleransi</td><td>Dicatat; tunjangan kehadiran bulan itu dapat tidak dibayar</td></tr>
+          <tr><td>Terlambat berulang (lebih dari [6] kali per bulan)</td><td>Teguran lisan, lalu Surat Peringatan sesuai Bab 23</td></tr>
+          <tr><td>Pulang sebelum waktunya</td><td>Hanya dengan izin atasan; tanpa izin diperlakukan sama dengan terlambat</td></tr>
+          <tr><td>Terlambat karena keadaan di luar kendali (banjir, kecelakaan, gangguan transportasi umum)</td><td>Tidak dihitung bila dilaporkan dan dapat dibuktikan</td></tr>
+        </tbody>
+      </table></div>
+      <p>Keterlambatan tidak boleh dikenai potongan upah pokok di luar ketentuan denda yang diatur PK/PP/PKB.</p>
+
+      <h3>7.4 Izin keluar pada jam kerja</h3>
+      <p>Pegawai yang perlu meninggalkan tempat kerja untuk urusan pribadi (berobat, mengurus dokumen, menjemput anak sakit) meminta izin atasan sebelum keluar dan mencatatnya. Izin keluar paling lama [2] jam dan paling banyak [2] kali per bulan tanpa memotong upah. Keperluan dinas di luar kantor dicatat sebagai tugas luar, bukan izin.</p>
+
+      <h3>7.5 Sakit</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Lama sakit</th><th>Bukti</th><th>Upah</th></tr></thead>
+        <tbody>
+          <tr><td>1 hari</td><td>Pemberitahuan kepada atasan sebelum jam kerja dimulai</td><td>Penuh</td></tr>
+          <tr><td>2 hari atau lebih</td><td>Surat keterangan dokter atau fasilitas kesehatan</td><td>Penuh</td></tr>
+          <tr><td>Sakit berkepanjangan</td><td>Surat dokter berkala</td><td>Penuh 4 bulan pertama, 75% 4 bulan kedua, 50% 4 bulan ketiga, 25% selanjutnya (Bab 8)</td></tr>
+          <tr><td>Kecelakaan kerja</td><td>Laporan kecelakaan dan surat dokter</td><td>Penuh selama tidak mampu bekerja, dibayar lembaga lalu diganti program JKK sesuai ketentuan</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>7.6 Ketidakhadiran tanpa keterangan</h3>
+      <p>Pegawai yang tidak hadir tanpa pemberitahuan tidak dibayar upahnya untuk hari tersebut, karena upah tidak dibayar bila pekerja tidak melakukan pekerjaan <span class="ps">PP 36/2021 Ps. 40</span>. Ketidakhadiran 5 hari kerja berturut-turut tanpa keterangan diproses sebagai mangkir (Bab 23).</p>
+
+      <h3>7.7 Kehadiran pendidik</h3>
+      <ul>
+        <li>Guru hadir paling lambat [15] menit sebelum jam pelajaran pertama dan mengisi jurnal mengajar setiap pertemuan.</li>
+        <li>Guru yang berhalangan menyiapkan tugas untuk peserta didik dan memberi tahu wakil kepala bidang kurikulum agar guru pengganti dapat ditugaskan.</li>
+        <li>Jam mengajar pengganti dicatat dan dibayar sesuai honor jam pelajaran (Bab 11).</li>
+        <li>Dosen mengisi presensi perkuliahan dan berita acara perkuliahan. Perkuliahan yang dibatalkan wajib dijadwalkan ulang dalam semester yang sama.</li>
+      </ul>
+    </section>
+
     <!-- ============ BAB 6 ============ -->
     <section class="bab" id="cuti" data-title="Cuti & izin" data-group="Bagian II · Hubungan kerja">
-      <div class="bab-head"><span class="bab-no">Bab 7</span><h2>Cuti dan izin</h2></div>
-      <h3>7.1 Cuti tahunan</h3>
+      <div class="bab-head"><span class="bab-no">Bab 8</span><h2>Cuti dan izin</h2></div>
+      <h3>8.1 Cuti tahunan</h3>
       <p>Paling sedikit <b>12 hari kerja</b> setelah pegawai bekerja 12 bulan terus-menerus, dengan upah penuh. Pengajuan paling lambat 7 hari kerja sebelumnya melalui atasan. Sisa cuti yang belum diambil saat hubungan kerja berakhir dibayar sebagai uang penggantian hak. Istirahat panjang dapat diberikan melalui perjanjian kerja, PP, atau PKB.</p>
-      <h3>7.2 Cuti terkait perempuan dan keluarga</h3>
+      <h3>8.2 Cuti terkait perempuan dan keluarga</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Jenis</th><th>Lama</th><th>Upah</th><th>Dasar</th></tr></thead>
         <tbody>
@@ -758,7 +944,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p>Pegawai yang menggunakan hak cuti melahirkan tidak boleh diberhentikan dan berhak kembali ke jabatan semula atau yang setara.</p>
-      <h3>7.3 Izin meninggalkan pekerjaan dengan upah</h3>
+      <h3>8.3 Izin meninggalkan pekerjaan dengan upah</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Peristiwa</th><th class="num">Hari</th></tr></thead>
         <tbody>
@@ -770,14 +956,14 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p>Dasar: UU 13/2003 Ps. 93 ayat (4). Selain itu, upah tetap dibayar ketika pegawai sakit dengan surat dokter (penuh 4 bulan pertama, 75% 4 bulan kedua, 50% 4 bulan ketiga, 25% selanjutnya sampai PHK), menjalankan ibadah yang diwajibkan agama satu kali (misalnya haji), menjalankan tugas negara, atau menjalankan tugas serikat pekerja atas persetujuan lembaga <span class="ps">PP 36/2021 Ps. 40–41</span>.</p>
-      <h3>7.4 Hari libur resmi</h3>
+      <h3>8.4 Hari libur resmi</h3>
       <p>Pegawai tidak wajib bekerja pada hari libur resmi yang ditetapkan pemerintah dan cuti bersama mengikuti SKB tiga menteri. Bila pekerjaan harus berjalan terus (keamanan, asrama, layanan kesehatan), pegawai yang bertugas berhak upah lembur hari libur.</p>
     </section>
 
     <!-- ============ BARU: KARIER & PENUGASAN ============ -->
     <section class="bab" id="karier" data-title="Karier, mutasi & perjalanan dinas" data-group="Bagian II · Hubungan kerja">
-      <div class="bab-head"><span class="bab-no">Bab 8</span><h2>Karier, penugasan, dan perjalanan dinas</h2></div>
-      <h3>8.1 Bentuk perpindahan jabatan</h3>
+      <div class="bab-head"><span class="bab-no">Bab 9</span><h2>Karier, penugasan, dan perjalanan dinas</h2></div>
+      <h3>9.1 Bentuk perpindahan jabatan</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Bentuk</th><th>Pengertian</th><th>Syarat utama</th></tr></thead>
         <tbody>
@@ -790,14 +976,14 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p>Mutasi tidak boleh dipakai sebagai hukuman terselubung atau cara memaksa pegawai mengundurkan diri. Pegawai yang keberatan dapat mengajukan keberatan tertulis dalam 7 hari kerja, dan keberatan tersebut dibahas secara bipartit.</p>
 
-      <h3>8.2 Pelaksana tugas (Plt) dan pelaksana harian (Plh)</h3>
+      <h3>9.2 Pelaksana tugas (Plt) dan pelaksana harian (Plh)</h3>
       <ul>
         <li><b>Plh</b> ditunjuk bila pejabat berhalangan sementara hingga 14 hari kerja (cuti, dinas luar). Plh tidak mengambil keputusan strategis, kepegawaian, dan keuangan di luar kewenangan rutin.</li>
         <li><b>Plt</b> ditunjuk bila jabatan kosong atau pejabat berhalangan lebih lama, paling lama 3 bulan dan dapat diperpanjang satu kali.</li>
         <li>Plt dan Plh yang menjalankan tugas lebih dari 1 bulan berhak tunjangan jabatan sesuai ketentuan internal.</li>
       </ul>
 
-      <h3>8.3 Perjalanan dinas</h3>
+      <h3>9.3 Perjalanan dinas</h3>
       <ol>
         <li>Perjalanan dinas dilaksanakan berdasarkan <b>surat tugas</b> yang ditandatangani atasan berwenang sebelum keberangkatan.</li>
         <li>Lembaga menanggung transportasi, penginapan, dan uang harian sesuai tabel di bawah.</li>
@@ -815,14 +1001,14 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p class="hint">Isi nominal sesuai kemampuan lembaga. Penggantian biaya yang dibayar atas bukti riil umumnya bukan penghasilan pegawai, sedangkan uang harian tetap dan fasilitas natura dapat menjadi objek PPh 21 sesuai PMK 66/2023; konsultasikan dengan bagian pajak.</p>
 
-      <h3>8.4 Perencanaan karier dan suksesi</h3>
+      <h3>9.4 Perencanaan karier dan suksesi</h3>
       <p>Setiap jabatan kunci memiliki paling sedikit satu calon pengganti yang dipersiapkan melalui pelatihan, penugasan khusus, atau pendampingan. Jalur karier dibuat dua arah: jalur struktural (memimpin unit) dan jalur fungsional atau keahlian (spesialis, guru senior, dosen dengan jabatan akademik) dengan penghargaan yang setara.</p>
     </section>
 
     <!-- ============ BAB 7 ============ -->
     <section class="bab" id="pengupahan" data-title="Pengupahan & THR" data-group="Bagian III · Kesejahteraan">
-      <div class="bab-head"><span class="bab-no">Bab 9</span><h2>Pengupahan, THR, dan pajak</h2></div>
-      <h3>9.1 Komponen upah</h3>
+      <div class="bab-head"><span class="bab-no">Bab 10</span><h2>Pengupahan, THR, dan pajak</h2></div>
+      <h3>10.1 Komponen upah</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Komponen</th><th>Ciri</th><th>Contoh</th></tr></thead>
         <tbody>
@@ -832,15 +1018,15 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
           <tr><td>Pendapatan non-upah</td><td>Bukan upah</td><td>THR, bonus, insentif, fasilitas</td></tr>
         </tbody>
       </table></div>
-      <p>Rincian setiap jenis tunjangan, besarannya, dan pengaruhnya terhadap hak lain ada di <a href="#komponen-gaji">Bab 10</a>.</p>
-      <h3>9.2 Upah minimum</h3>
+      <p>Rincian setiap jenis tunjangan, besarannya, dan pengaruhnya terhadap hak lain ada di <a href="#komponen-gaji">Bab 11</a>.</p>
+      <h3>10.2 Upah minimum</h3>
       <ul>
         <li>Upah minimum 2026 ditetapkan dengan formula PP 49/2025 dan berlaku sejak <b>1 Januari 2026</b>. Contoh: UMP DKI Jakarta 2026 Rp5.729.876 dan UMP Aceh Rp3.932.552. Gunakan UMK kabupaten/kota tempat kerja bila telah ditetapkan, karena nilainya bisa lebih tinggi dari UMP.</li>
         <li>Upah minimum berlaku bagi pegawai dengan masa kerja <b>kurang dari 1 tahun</b>. Pegawai dengan masa kerja 1 tahun atau lebih dibayar berdasarkan struktur dan skala upah.</li>
         <li>Membayar di bawah upah minimum adalah tindak pidana. Pengecualian hanya untuk usaha mikro dan kecil yang upahnya ditetapkan melalui kesepakatan sesuai ketentuan khusus.</li>
         <li>Gubernur kini wajib menetapkan upah minimum sektoral provinsi; periksa apakah bidang usaha lembaga Anda termasuk sektor tersebut.</li>
       </ul>
-      <h3>9.3 Struktur dan skala upah</h3>
+      <h3>10.3 Struktur dan skala upah</h3>
       <p>Setiap lembaga wajib menyusun struktur dan skala upah dengan memperhatikan golongan, jabatan, masa kerja, pendidikan, dan kompetensi, lalu memberitahukannya kepada seluruh pegawai secara perorangan. Contoh kerangka:</p>
       <div class="tablewrap"><table>
         <thead><tr><th>Golongan</th><th>Contoh jabatan</th><th>Kualifikasi minimum</th><th class="num">Rentang (× UMK)</th></tr></thead>
@@ -853,13 +1039,13 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p class="hint">Angka rentang adalah ilustrasi untuk disesuaikan dengan kemampuan dan kebijakan lembaga.</p>
-      <h3>9.4 Pembayaran, keterlambatan, dan pemotongan</h3>
+      <h3>10.4 Pembayaran, keterlambatan, dan pemotongan</h3>
       <ul>
         <li>Upah dibayar paling lambat pada tanggal yang disepakati, sekurang-kurangnya sebulan sekali, melalui rekening pegawai, disertai slip gaji yang merinci komponen.</li>
         <li>Keterlambatan dikenai denda: mulai hari ke-4 sampai ke-8 sebesar 5% per hari dari upah; setelah hari ke-8 ditambah 1% per hari dengan batas 50% upah dalam sebulan; setelah sebulan ditambah bunga bank <span class="ps">PP 36/2021 Ps. 61</span>.</li>
         <li>Pemotongan upah (denda, ganti rugi, uang muka, cicilan, sewa fasilitas) seluruhnya paling banyak <b>50%</b> dari upah yang diterima <span class="ps">PP 36/2021 Ps. 65</span>.</li>
       </ul>
-      <h3>9.5 Tunjangan Hari Raya (THR)</h3>
+      <h3>10.5 Tunjangan Hari Raya (THR)</h3>
       <ul>
         <li>Berhak: pegawai PKWTT dan PKWT dengan masa kerja minimal <b>1 bulan</b> terus-menerus <span class="ps">Permenaker 6/2016</span>.</li>
         <li>Masa kerja 12 bulan atau lebih: <b>1 bulan upah</b>. Kurang dari 12 bulan: masa kerja (bulan) ÷ 12 × 1 bulan upah.</li>
@@ -867,16 +1053,16 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Pegawai PKWTT yang di-PHK paling lama 30 hari sebelum hari raya tetap berhak THR.</li>
         <li>Keterlambatan dikenai denda 5% dari total THR, tanpa menghapus kewajiban membayar.</li>
       </ul>
-      <h3>9.6 Pajak penghasilan pegawai</h3>
+      <h3>10.6 Pajak penghasilan pegawai</h3>
       <p>Lembaga memotong PPh Pasal 21 setiap bulan menggunakan Tarif Efektif Rata-rata (TER) sesuai status PTKP pegawai, lalu menghitung ulang dengan tarif Pasal 17 pada masa pajak terakhir (Desember atau bulan terakhir bekerja) <span class="ps">PP 58/2023</span>. PTKP pegawai lajang tanpa tanggungan (TK/0) Rp54.000.000 per tahun. Bukti potong 1721-A1 diberikan kepada pegawai paling lambat satu bulan setelah tahun pajak berakhir.</p>
     </section>
 
     <!-- ============ BARU: KOMPONEN GAJI & TUNJANGAN ============ -->
     <section class="bab" id="komponen-gaji" data-title="Komponen gaji & tunjangan" data-group="Bagian III · Kesejahteraan">
-      <div class="bab-head"><span class="bab-no">Bab 10</span><h2>Komponen gaji dan tunjangan</h2></div>
+      <div class="bab-head"><span class="bab-no">Bab 11</span><h2>Komponen gaji dan tunjangan</h2></div>
       <p>Bab ini menjadi kebijakan penggajian <span class="org">[Nama Lembaga]</span>. Besaran dalam kurung siku dan persentase yang ditulis sebagai contoh diisi sesuai kemampuan keuangan lembaga, lalu dicantumkan dalam PP/PKB atau keputusan pimpinan dan diberitahukan kepada seluruh pegawai.</p>
 
-      <h3>10.1 Prinsip</h3>
+      <h3>11.1 Prinsip</h3>
       <ul>
         <li><b>Layak dan patuh.</b> Upah pokok ditambah tunjangan tetap untuk pegawai dengan masa kerja kurang dari 1 tahun tidak boleh di bawah upah minimum setempat.</li>
         <li><b>Setara.</b> Pekerjaan yang bernilai sama dibayar sama, tanpa membedakan jenis kelamin, agama, suku, status perkawinan, atau disabilitas.</li>
@@ -884,7 +1070,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li><b>Tertulis.</b> Komponen yang dijanjikan dalam perjanjian kerja tidak boleh dikurangi sepihak.</li>
       </ul>
 
-      <h3>10.2 Peta komponen dan pengaruhnya terhadap hak lain</h3>
+      <h3>11.2 Peta komponen dan pengaruhnya terhadap hak lain</h3>
       <p>Status sebuah komponen (tetap atau tidak tetap) menentukan apakah komponen itu ikut dihitung dalam lembur, THR, pesangon, dan iuran BPJS. Tunjangan disebut <b>tetap</b> bila dibayar secara teratur dan tidak dikaitkan dengan kehadiran atau pencapaian prestasi tertentu.</p>
       <div class="tablewrap"><table>
         <thead><tr><th>Komponen</th><th>Status</th><th class="num">Lembur</th><th class="num">THR</th><th class="num">Pesangon</th><th class="num">BPJS</th></tr></thead>
@@ -904,18 +1090,18 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p class="hint">* Bila upah terdiri atas upah pokok, tunjangan tetap, dan tunjangan tidak tetap, dan upah pokok + tunjangan tetap kurang dari 75% dari keseluruhan upah, dasar upah lembur adalah 75% dari keseluruhan upah <span class="ps">PP 35/2021 Ps. 32</span>. Dasar iuran BPJS adalah upah pokok + tunjangan tetap; lembaga boleh melaporkan lebih tinggi.</p>
 
-      <h3>10.3 Upah pokok</h3>
+      <h3>11.3 Upah pokok</h3>
       <ul>
-        <li>Ditetapkan per golongan dan kelas jabatan sesuai struktur dan skala upah (Bab 9.3), dengan beberapa tingkat (step) di dalam setiap golongan.</li>
+        <li>Ditetapkan per golongan dan kelas jabatan sesuai struktur dan skala upah (Bab 10.3), dengan beberapa tingkat (step) di dalam setiap golongan.</li>
         <li>Paling sedikit 75% dari jumlah upah pokok dan tunjangan tetap <span class="ps">PP 36/2021 Ps. 7</span>.</li>
         <li>Pegawai baru masuk pada tingkat terendah golongannya, kecuali pengalaman kerja relevan diakui dalam surat penawaran.</li>
       </ul>
 
-      <h3>10.4 Tunjangan tetap</h3>
+      <h3>11.4 Tunjangan tetap</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Tunjangan</th><th>Penerima</th><th>Contoh besaran</th><th>Ketentuan</th></tr></thead>
         <tbody>
-          <tr><td>Jabatan/struktural</td><td>Pemegang jabatan struktural</td><td>Koordinator [Rp ...], kepala unit [Rp ...], manajer/kepala sekolah [Rp ...]</td><td>Berhenti saat tidak lagi menjabat; Plt menerima setelah 1 bulan (Bab 8.2)</td></tr>
+          <tr><td>Jabatan/struktural</td><td>Pemegang jabatan struktural</td><td>Koordinator [Rp ...], kepala unit [Rp ...], manajer/kepala sekolah [Rp ...]</td><td>Berhenti saat tidak lagi menjabat; Plt menerima setelah 1 bulan (Bab 9.2)</td></tr>
           <tr><td>Keluarga</td><td>Pegawai yang menanggung pasangan dan/atau anak</td><td>Pasangan [10%] upah pokok; anak [2%] per anak, maks. 3 anak sampai usia 21 tahun atau 25 tahun bila masih kuliah</td><td>Berdasarkan kartu keluarga; bila suami dan istri sama-sama pegawai, dibayar kepada salah satu</td></tr>
           <tr><td>Masa kerja</td><td>Pegawai tetap dengan masa kerja ≥ [3] tahun</td><td>[Rp ...] per tiap 3 tahun masa kerja</td><td>Dihitung dari tanggal mulai bekerja</td></tr>
           <tr><td>Keahlian/sertifikasi</td><td>Pemegang sertifikat kompetensi yang dibutuhkan jabatan</td><td>[Rp ...] per bulan</td><td>Selama sertifikat berlaku dan relevan</td></tr>
@@ -924,7 +1110,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
 
-      <h3>10.5 Tunjangan tidak tetap</h3>
+      <h3>11.5 Tunjangan tidak tetap</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Tunjangan</th><th>Dasar pembayaran</th><th>Contoh besaran</th></tr></thead>
         <tbody>
@@ -938,7 +1124,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p>Cuti tahunan, cuti melahirkan, dan izin dengan upah tidak boleh mengurangi upah pokok dan tunjangan tetap. Tunjangan tidak tetap berbasis kehadiran dapat tidak dibayar pada hari tidak hadir.</p>
 
-      <h3>10.6 Komponen khusus lembaga pendidikan</h3>
+      <h3>11.6 Komponen khusus lembaga pendidikan</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Komponen</th><th>Penerima</th><th>Contoh besaran</th><th>Status</th></tr></thead>
         <tbody>
@@ -956,10 +1142,10 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <div class="note edu"><span class="tag">Tunjangan profesi</span><p>Tunjangan profesi guru dan dosen bersertifikat dibayarkan pemerintah langsung kepada pendidik, bukan oleh yayasan. Tunjangan ini <b>tidak boleh</b> diperhitungkan sebagai pengganti upah dari yayasan, tidak boleh dipotong yayasan, dan tidak menjadi dasar pesangon atau THR dari yayasan. Pajaknya dipotong oleh pihak yang membayarkan.</p></div>
 
-      <h3>10.7 Kenaikan gaji</h3>
+      <h3>11.7 Kenaikan gaji</h3>
       <ol>
         <li><b>Kenaikan berkala.</b> Ditinjau setiap tahun untuk pegawai dengan masa kerja 1 tahun atau lebih, mengikuti struktur dan skala upah, dengan memperhatikan kemampuan lembaga dan produktivitas <span class="ps">PP 36/2021</span>.</li>
-        <li><b>Kenaikan berbasis kinerja.</b> Mengikuti hasil penilaian kinerja (Bab 18) dengan contoh matriks:
+        <li><b>Kenaikan berbasis kinerja.</b> Mengikuti hasil penilaian kinerja (Bab 21) dengan contoh matriks:
           <div class="tablewrap" style="margin-top:var(--s2)"><table>
             <thead><tr><th class="num">Nilai kinerja</th><th>Predikat</th><th class="num">Kenaikan upah pokok</th></tr></thead>
             <tbody>
@@ -976,7 +1162,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Kenaikan berlaku mulai [1 Januari / 1 Juli tahun ajaran] dan diberitahukan tertulis kepada pegawai.</li>
       </ol>
 
-      <h3>10.8 Bonus dan insentif</h3>
+      <h3>11.8 Bonus dan insentif</h3>
       <ul>
         <li>Bonus tahunan bergantung pada kinerja lembaga dan kinerja pegawai. Bonus bukan upah dan bukan hak tetap, kecuali dijanjikan dalam perjanjian kerja atau PKB.</li>
         <li>Kriteria, rumus pembagian, dan waktu pembayaran diumumkan sebelum periode penilaian dimulai.</li>
@@ -984,10 +1170,10 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Pegawai yang keluar sebelum tanggal pembayaran berhak atas bonus proporsional bila hal itu diatur dalam kebijakan bonus.</li>
       </ul>
 
-      <h3>10.9 Fasilitas dan natura</h3>
+      <h3>11.9 Fasilitas dan natura</h3>
       <p>Sejak PMK 66/2023, imbalan dalam bentuk natura dan kenikmatan (misalnya rumah dinas, kendaraan, telepon, voucer) pada dasarnya menjadi objek PPh 21 bagi pegawai, dengan sejumlah pengecualian. Pengecualian itu antara lain makanan dan minuman yang disediakan bagi seluruh pegawai, natura yang diperlukan untuk pekerjaan seperti seragam dan alat pelindung diri, fasilitas di daerah tertentu, serta natura jenis tertentu dalam batas nilai yang ditetapkan, seperti bingkisan hari raya. Bagian keuangan mencatat setiap fasilitas dan nilainya agar perlakuan pajaknya tepat.</p>
 
-      <h3>10.10 Potongan gaji</h3>
+      <h3>11.10 Potongan gaji</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Potongan</th><th>Dasar</th><th class="num">Besaran</th></tr></thead>
         <tbody>
@@ -1002,7 +1188,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p>Seluruh potongan selain pajak dan iuran wajib paling banyak <b>50%</b> dari upah yang diterima pegawai setiap pembayaran <span class="ps">PP 36/2021 Ps. 65</span>.</p>
 
-      <h3>10.11 Contoh slip gaji</h3>
+      <h3>11.11 Contoh slip gaji</h3>
       <p>Contoh pegawai berstatus kawin dengan 1 anak (PTKP K/1), pola 5 hari kerja, 22 hari hadir, risiko kerja sangat rendah. Angka bersifat ilustrasi.</p>
       <div class="tablewrap"><table>
         <thead><tr><th>Penerimaan</th><th class="num">Rp</th><th>Potongan</th><th class="num">Rp</th></tr></thead>
@@ -1032,7 +1218,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BAB 8 ============ -->
     <section class="bab" id="jaminan-sosial" data-title="Jaminan sosial" data-group="Bagian III · Kesejahteraan">
-      <div class="bab-head"><span class="bab-no">Bab 11</span><h2>Jaminan sosial</h2></div>
+      <div class="bab-head"><span class="bab-no">Bab 12</span><h2>Jaminan sosial</h2></div>
       <p>Setiap pegawai, termasuk PKWT dan pegawai masa percobaan, wajib didaftarkan ke BPJS Kesehatan dan BPJS Ketenagakerjaan sejak hari pertama bekerja.</p>
       <div class="tablewrap"><table>
         <thead><tr><th>Program</th><th class="num">Pemberi kerja</th><th class="num">Pegawai</th><th>Catatan</th></tr></thead>
@@ -1045,7 +1231,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
           <tr><td>Jaminan Kehilangan Pekerjaan (JKP)</td><td class="num">–</td><td class="num">–</td><td>Iuran 0,36% dari rekomposisi pemerintah dan JKK; tidak menambah beban</td></tr>
         </tbody>
       </table></div>
-      <h3>11.1 Manfaat JKP setelah PP 6/2025</h3>
+      <h3>12.1 Manfaat JKP setelah PP 6/2025</h3>
       <ul>
         <li>Uang tunai <b>60% upah</b> setiap bulan, paling lama <b>6 bulan</b>, dengan batas atas upah Rp5.000.000.</li>
         <li>Syarat iuran: 12 bulan dalam 24 bulan terakhir; syarat 6 bulan berturut-turut sudah tidak berlaku.</li>
@@ -1054,7 +1240,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Selain uang tunai, peserta mendapat akses informasi pasar kerja dan pelatihan.</li>
       </ul>
       <div class="note new"><span class="tag">UU baru</span><p>UU Pelindungan Ketenagakerjaan mewajibkan <b>dana cadangan pesangon</b> yang berdiri sendiri, terpisah dari JHT dan JKP. Besaran dan mekanismenya akan diatur dalam PP. Bagian keuangan sebaiknya mulai menghitung estimasi kewajiban pesangon seluruh pegawai.</p></div>
-      <h3>11.2 Kewajiban administrasi</h3>
+      <h3>12.2 Kewajiban administrasi</h3>
       <ul>
         <li>Iuran BPJS dibayar paling lambat tanggal 15 bulan berikutnya.</li>
         <li>Perubahan upah, data keluarga, dan pegawai keluar dilaporkan paling lambat 7 hari.</li>
@@ -1064,8 +1250,8 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BARU: PENSIUN & KESEJAHTERAAN ============ -->
     <section class="bab" id="pensiun" data-title="Pensiun & kesejahteraan" data-group="Bagian III · Kesejahteraan">
-      <div class="bab-head"><span class="bab-no">Bab 12</span><h2>Pensiun dan kesejahteraan tambahan</h2></div>
-      <h3>12.1 Usia pensiun</h3>
+      <div class="bab-head"><span class="bab-no">Bab 13</span><h2>Pensiun dan kesejahteraan tambahan</h2></div>
+      <h3>13.1 Usia pensiun</h3>
       <p>Undang-undang ketenagakerjaan tidak menetapkan satu usia pensiun untuk semua lembaga. Usia pensiun ditetapkan dalam perjanjian kerja, PP, atau PKB. Sebagai acuan, usia pensiun untuk manfaat Jaminan Pensiun BPJS Ketenagakerjaan adalah <b>59 tahun</b> sejak 1 Januari 2025, dan naik satu tahun setiap tiga tahun sampai 65 tahun <span class="ps">PP 45/2015 Ps. 15</span>.</p>
       <div class="tablewrap"><table>
         <thead><tr><th>Periode</th><th class="num">Usia pensiun JP</th></tr></thead>
@@ -1079,18 +1265,18 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       <p>Usia pensiun internal <span class="org">[Nama Lembaga]</span>: <b>[ ... ] tahun</b>. Lembaga yang menetapkan usia pensiun lebih rendah dari usia pensiun JP dianjurkan menyesuaikannya agar pegawai tidak mengalami jeda tanpa penghasilan.</p>
       <div class="note edu"><span class="tag">Lembaga pendidikan</span><p>Sebagai pembanding, batas usia pensiun guru ASN adalah 60 tahun dan dosen ASN 65 tahun, dengan perpanjangan bagi profesor sesuai ketentuan. Yayasan bebas menetapkan usia pensiun sendiri dalam PP, misalnya 60 tahun untuk guru dan 65 tahun untuk dosen, dan dapat mengangkat kembali pensiunan sebagai pendidik tidak tetap dengan PKWT.</p></div>
 
-      <h3>12.2 Persiapan pensiun</h3>
+      <h3>13.2 Persiapan pensiun</h3>
       <ul>
         <li>Pemberitahuan tertulis kepada pegawai paling lambat <b>6 bulan</b> sebelum usia pensiun.</li>
         <li>Pelatihan masa persiapan pensiun (keuangan, kesehatan, wirausaha) bagi pegawai berusia 55 tahun ke atas.</li>
-        <li>Hak saat pensiun: uang pesangon 1,75 kali, UPMK 1 kali, dan UPH (Bab 20), ditambah manfaat JHT dan JP dari BPJS.</li>
+        <li>Hak saat pensiun: uang pesangon 1,75 kali, UPMK 1 kali, dan UPH (Bab 24), ditambah manfaat JHT dan JP dari BPJS.</li>
         <li>Bila lembaga mengikutkan pegawai dalam program pensiun tambahan, manfaatnya dapat diperhitungkan dengan pesangon hanya jika diatur tegas dalam PK/PP/PKB.</li>
       </ul>
 
-      <h3>12.3 Program pensiun tambahan (DPLK/DPPK)</h3>
+      <h3>13.3 Program pensiun tambahan (DPLK/DPPK)</h3>
       <p>Lembaga dapat mengikutsertakan pegawai dalam Dana Pensiun Lembaga Keuangan (DPLK) atau mendirikan Dana Pensiun Pemberi Kerja (DPPK) sesuai UU 4/2023 tentang Pengembangan dan Penguatan Sektor Keuangan. Iuran dapat ditanggung bersama, misalnya 5% dari lembaga dan 2% dari pegawai. Program ini juga dapat dipakai untuk mencadangkan kewajiban pesangon.</p>
 
-      <h3>12.4 Kesejahteraan tambahan</h3>
+      <h3>13.4 Kesejahteraan tambahan</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Program</th><th>Keterangan</th></tr></thead>
         <tbody>
@@ -1107,7 +1293,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BAB 9 ============ -->
     <section class="bab" id="k3" data-title="Keselamatan & kesehatan kerja" data-group="Bagian III · Kesejahteraan">
-      <div class="bab-head"><span class="bab-no">Bab 13</span><h2>Keselamatan dan kesehatan kerja (K3)</h2></div>
+      <div class="bab-head"><span class="bab-no">Bab 14</span><h2>Keselamatan dan kesehatan kerja (K3)</h2></div>
       <p>K3 adalah hak dasar setiap pegawai. Lembaga wajib menyediakan tempat kerja yang aman, alat pelindung diri tanpa biaya, pelatihan, dan fasilitas P3K.</p>
       <ul>
         <li>Membentuk Panitia Pembina K3 (P2K3) bila mempekerjakan 100 orang atau lebih, atau bila tempat kerja berpotensi bahaya tinggi.</li>
@@ -1116,16 +1302,70 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Pegawai berhak menolak bekerja bila syarat K3 dan alat pelindung yang wajib tidak tersedia, kecuali dalam batas yang dapat dipertanggungjawabkan <span class="ps">UU 1/1970 Ps. 12</span>.</li>
       </ul>
       <div class="note edu"><span class="tag">Lembaga pendidikan</span><p>Lengkapi jalur evakuasi dan titik kumpul, simulasi bencana minimal sekali per semester, prosedur keselamatan laboratorium IPA dan bengkel kejuruan, pemeriksaan kendaraan antar-jemput, serta pengawasan kegiatan luar sekolah. Peserta didik termasuk dalam rencana tanggap darurat.</p></div>
-      <h3>13.1 Kesehatan mental</h3>
+      <h3>14.1 Kesehatan mental</h3>
       <p><span class="org">[Nama Lembaga]</span> mendorong beban kerja yang wajar, hak untuk tidak dihubungi di luar jam kerja kecuali keadaan darurat, serta akses konseling yang terjaga kerahasiaannya.</p>
+    </section>
+
+    <!-- ============ BARU: KESEHATAN ============ -->
+    <section class="bab" id="kesehatan" data-title="Kesehatan & lingkungan kerja" data-group="Bagian III · Kesejahteraan">
+      <div class="bab-head"><span class="bab-no">Bab 15</span><h2>Kesehatan dan lingkungan kerja</h2></div>
+      <h3>15.1 Pemeriksaan kesehatan</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Jenis</th><th>Waktu</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Sebelum bekerja</td><td>Setelah dinyatakan diterima, sebelum mulai bekerja</td><td>Untuk menempatkan pegawai pada pekerjaan yang sesuai dengan kondisi kesehatannya, bukan untuk menolak pelamar karena disabilitas</td></tr>
+          <tr><td>Berkala</td><td>Paling sedikit sekali setahun</td><td>Biaya ditanggung lembaga; dapat memakai fasilitas JKN untuk skrining</td></tr>
+          <tr><td>Khusus</td><td>Setelah sakit panjang, kecelakaan, atau untuk pekerjaan berisiko</td><td>Menilai kesiapan kembali bekerja</td></tr>
+        </tbody>
+      </table></div>
+      <p>Dasar: Permenakertrans Per.02/MEN/1980 tentang pemeriksaan kesehatan tenaga kerja. Hasil pemeriksaan adalah data kesehatan yang bersifat rahasia; atasan hanya menerima kesimpulan layak atau tidak layak untuk tugas tertentu.</p>
+
+      <h3>15.2 Kembali bekerja setelah sakit atau kecelakaan</h3>
+      <ol>
+        <li>Pegawai menyerahkan surat dokter yang menyatakan siap bekerja, dengan atau tanpa pembatasan.</li>
+        <li>Bagian SDM, atasan, dan pegawai menyusun rencana kembali bekerja: jam kerja bertahap, penyesuaian tugas, atau alat bantu.</li>
+        <li>Untuk kecelakaan kerja, lembaga memanfaatkan program kembali bekerja (<i>return to work</i>) dalam JKK BPJS Ketenagakerjaan, yang mencakup pendampingan dan pelatihan.</li>
+        <li>Pegawai yang tidak dapat kembali ke jabatan semula ditawari jabatan lain yang sesuai tanpa penurunan upah karena kecelakaan kerja tersebut.</li>
+      </ol>
+
+      <h3>15.3 Kawasan Tanpa Rokok</h3>
+      <ul>
+        <li>Tempat kerja dan tempat proses belajar mengajar adalah Kawasan Tanpa Rokok <span class="ps">PP 28/2024</span>. Di satuan pendidikan, larangan merokok berlaku di seluruh area, termasuk rokok elektronik.</li>
+        <li>Di tempat kerja selain satuan pendidikan, lembaga dapat menyediakan tempat khusus merokok di ruang terbuka yang terpisah dari gedung dan jalur lalu lalang.</li>
+        <li>Lembaga dilarang menjual, mengiklankan, dan menerima sponsor produk rokok di lingkungannya.</li>
+        <li>Pelanggaran ditegur dan diproses sebagai pelanggaran tata tertib.</li>
+      </ul>
+
+      <h3>15.4 HIV dan penyakit kronis</h3>
+      <ul>
+        <li>Tes HIV <b>tidak boleh</b> dijadikan syarat penerimaan, kelanjutan hubungan kerja, atau kewajiban dalam pemeriksaan kesehatan rutin <span class="ps">Kepmenaker 68/2004</span>.</li>
+        <li>Status HIV dan penyakit kronis lain dirahasiakan dan tidak menjadi alasan diskriminasi, mutasi, atau PHK.</li>
+        <li>Pegawai dengan penyakit kronis berhak atas penyesuaian jadwal untuk pengobatan rutin.</li>
+      </ul>
+
+      <h3>15.5 Pencegahan penyalahgunaan narkoba</h3>
+      <ul>
+        <li>Lembaga melaksanakan program pencegahan dan penanggulangan penyalahgunaan narkoba di tempat kerja <span class="ps">Kepmenakertrans 11/2005</span>: penyuluhan, kebijakan tertulis, dan rujukan rehabilitasi.</li>
+        <li>Tes narkoba dilakukan berdasarkan kebijakan tertulis (acak, untuk jabatan berisiko, atau bila ada dugaan kuat), oleh laboratorium atau instansi berwenang, dengan persetujuan dan kerahasiaan hasil.</li>
+        <li>Pegawai yang secara sukarela melaporkan ketergantungan dan mengikuti rehabilitasi diberi kesempatan pemulihan sebelum tindakan disiplin.</li>
+        <li>Membawa, menggunakan, atau mengedarkan narkoba di lingkungan kerja tetap merupakan pelanggaran berat.</li>
+      </ul>
+
+      <h3>15.6 Lingkungan kerja yang sehat</h3>
+      <ul>
+        <li>Ruang kerja dengan ventilasi, pencahayaan, dan kebersihan yang memadai, serta air minum yang aman.</li>
+        <li>Toilet terpisah untuk laki-laki dan perempuan dalam jumlah memadai, termasuk yang dapat diakses penyandang disabilitas.</li>
+        <li>Pengaturan ergonomi untuk kerja di depan komputer: istirahat mata, kursi, dan posisi layar.</li>
+        <li>Kantin atau penyedia makanan memenuhi standar kebersihan pangan.</li>
+      </ul>
     </section>
 
     <!-- ============ BAB 10 ============ -->
     <section class="bab" id="etika" data-title="Kode etik & tata tertib" data-group="Bagian IV · Perilaku">
-      <div class="bab-head"><span class="bab-no">Bab 14</span><h2>Kode etik dan tata tertib</h2></div>
-      <h3>14.1 Nilai dasar</h3>
+      <div class="bab-head"><span class="bab-no">Bab 16</span><h2>Kode etik dan tata tertib</h2></div>
+      <h3>16.1 Nilai dasar</h3>
       <p>Integritas, profesionalisme, saling menghormati, tanggung jawab, dan pelayanan. Nilai ini menjadi ukuran perilaku di tempat kerja, di ruang digital, dan saat mewakili lembaga.</p>
-      <h3>14.2 Tata tertib</h3>
+      <h3>16.2 Tata tertib</h3>
       <ul>
         <li><b>Kehadiran.</b> Hadir tepat waktu, mencatat presensi sendiri, memberi tahu atasan sebelum jam kerja bila berhalangan.</li>
         <li><b>Penampilan.</b> Berpakaian rapi dan sopan sesuai ketentuan seragam lembaga.</li>
@@ -1135,15 +1375,74 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li><b>Media sosial.</b> Tidak mengunggah data pribadi rekan, pelanggan, atau peserta didik, dan tidak berbicara atas nama lembaga tanpa izin.</li>
         <li><b>Bebas zat terlarang.</b> Dilarang membawa atau menggunakan narkotika, minuman keras, dan senjata di lingkungan kerja.</li>
       </ul>
-      <h3>14.3 Pelindungan data pribadi pegawai</h3>
+      <h3>16.3 Pelindungan data pribadi pegawai</h3>
       <p>Sesuai UU 27/2022, lembaga sebagai pengendali data pribadi hanya mengumpulkan data pegawai yang diperlukan, menjelaskan tujuan pemrosesannya, membatasi akses, dan menyimpannya selama dibutuhkan. Pegawai berhak mengakses, memperbaiki, dan meminta penghapusan datanya sesuai ketentuan. Kegagalan pelindungan data diberitahukan secara tertulis kepada pegawai terdampak paling lambat 3 × 24 jam. Data kesehatan, biometrik, dan data anak termasuk data spesifik yang wajib dilindungi lebih ketat.</p>
       <div class="note edu"><span class="tag">Lembaga pendidikan</span><p>Pendidik menjunjung kode etik profesi dan wajib melindungi peserta didik. Dilarang melakukan kekerasan fisik maupun verbal, perundungan, dan diskriminasi. Hubungan pribadi atau komunikasi tertutup dengan peserta didik di luar kepentingan pembelajaran tidak diperbolehkan. Komunikasi dengan peserta didik dilakukan melalui kanal resmi dan melibatkan orang tua atau wali.</p></div>
     </section>
 
+    <!-- ============ BARU: ETIKA LANJUTAN ============ -->
+    <section class="bab" id="etika-lanjutan" data-title="Etika lanjutan & aset" data-group="Bagian IV · Perilaku">
+      <div class="bab-head"><span class="bab-no">Bab 17</span><h2>Etika lanjutan, keberagaman, dan aset lembaga</h2></div>
+      <h3>17.1 Pekerjaan sampingan dan rangkap jabatan</h3>
+      <ul>
+        <li>Pekerjaan sampingan di luar jam kerja diperbolehkan bila tidak mengganggu tugas, tidak bersaing langsung dengan lembaga, tidak memakai aset atau informasi lembaga, dan tidak menimbulkan benturan kepentingan.</li>
+        <li>Pegawai melaporkan pekerjaan sampingan secara tertulis kepada bagian SDM. Untuk jabatan manajerial dan bagian keuangan atau pengadaan, pekerjaan sampingan memerlukan persetujuan tertulis.</li>
+        <li>Rangkap jabatan di dalam lembaga (misalnya guru merangkap staf tata usaha) ditetapkan dengan surat tugas, disertai pengaturan beban kerja dan tunjangan.</li>
+        <li>Pekerjaan sampingan tidak boleh dilakukan pada jam kerja, termasuk saat kerja jarak jauh.</li>
+      </ul>
+
+      <h3>17.2 Kerahasiaan dan larangan bersaing</h3>
+      <ul>
+        <li>Pegawai menandatangani perjanjian kerahasiaan (Lampiran B) yang berlaku selama dan setelah hubungan kerja. Pembocoran rahasia dagang dapat dipidana penjara paling lama 2 tahun dan/atau denda paling banyak Rp300 juta <span class="ps">UU 30/2000 Ps. 17</span>.</li>
+        <li>Larangan bekerja pada pesaing setelah keluar (<i>non-compete</i>) perlu dibuat sempit dan wajar. Setiap orang berhak memilih dan pindah pekerjaan <span class="ps">UU 13/2003 Ps. 31</span>, sehingga klausul yang terlalu luas berisiko tidak dapat diberlakukan.</li>
+        <li>Bila digunakan, klausul larangan bersaing dibatasi pada jabatan kunci, jangka waktu paling lama [12] bulan, wilayah dan bidang usaha yang jelas, dan sebaiknya disertai kompensasi selama masa larangan.</li>
+        <li>Larangan membujuk rekan kerja atau pelanggan untuk pindah (<i>non-solicitation</i>) lebih mudah diterapkan daripada larangan bersaing umum.</li>
+      </ul>
+
+      <h3>17.3 Netralitas politik</h3>
+      <ul>
+        <li>Pegawai bebas memilih dan berpendapat secara pribadi, tetapi tidak membawa kegiatan politik praktis ke dalam pekerjaan.</li>
+        <li>Dilarang memakai jabatan, aset, kanal komunikasi, dan jam kerja lembaga untuk kampanye; dilarang mengarahkan bawahan, peserta didik, atau orang tua untuk memilih calon tertentu.</li>
+        <li>Kampanye di tempat pendidikan hanya dapat berlangsung atas izin penanggung jawab dan tanpa atribut kampanye, sesuai UU 7/2017 sebagaimana dimaknai Putusan MK 65/PUU-XXI/2023. Satuan pendidikan dapat menetapkan kebijakan yang lebih ketat.</li>
+        <li>Pegawai yang mencalonkan diri dalam pemilihan umum memberi tahu lembaga secara tertulis. Lembaga dapat memberi cuti di luar tanggungan selama masa kampanye sesuai kesepakatan.</li>
+        <li>Pada hari pemungutan suara, pegawai yang bertugas diberi kesempatan memberikan suara.</li>
+      </ul>
+
+      <h3>17.4 Hubungan keluarga antarpegawai dan pencegahan nepotisme</h3>
+      <ul>
+        <li>Hubungan keluarga atau perkawinan antarpegawai tidak menjadi alasan PHK, kecuali diatur dalam PK/PP/PKB <span class="ps">UU 13/2003 Ps. 153</span>.</li>
+        <li>Pegawai tidak boleh menjadi atasan langsung, penilai kinerja, atau pemeriksa keuangan bagi anggota keluarganya. Bila hal itu terjadi, salah satu dipindahkan ke unit lain tanpa penurunan upah.</li>
+        <li>Pelamar yang memiliki hubungan keluarga dengan pegawai wajib menyatakannya. Pegawai yang bersangkutan tidak boleh menjadi pewawancara atau pengambil keputusan dalam seleksi tersebut.</li>
+        <li>Penerimaan pegawai melalui rekomendasi (referral) tetap mengikuti seluruh tahap seleksi.</li>
+      </ul>
+
+      <h3>17.5 Keberagaman dan kesempatan beribadah</h3>
+      <ul>
+        <li>Lembaga wajib memberi kesempatan secukupnya kepada pegawai untuk melaksanakan ibadah yang diwajibkan agamanya <span class="ps">UU 13/2003 Ps. 80</span>, misalnya salat lima waktu, salat Jumat, dan ibadah hari raya.</li>
+        <li>Jadwal rapat, ujian, dan kegiatan disusun dengan memperhatikan waktu ibadah dan hari raya semua agama yang dianut pegawai.</li>
+        <li>Lembaga menyediakan tempat ibadah atau ruang yang layak.</li>
+        <li>Lelucon, julukan, atau komentar yang merendahkan agama, suku, ras, jenis kelamin, disabilitas, atau asal daerah termasuk pelanggaran tata tertib.</li>
+        <li>Pakaian keagamaan dihormati sepanjang memenuhi syarat keselamatan kerja.</li>
+      </ul>
+
+      <h3>17.6 Aset, inventaris, dan kendaraan dinas</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Ketentuan</th><th>Rincian</th></tr></thead>
+        <tbody>
+          <tr><td>Serah terima</td><td>Setiap aset yang dipegang pegawai (laptop, ponsel, kunci, kendaraan) dicatat dengan berita acara</td></tr>
+          <tr><td>Pemakaian</td><td>Untuk keperluan dinas; pemakaian pribadi hanya dengan izin tertulis</td></tr>
+          <tr><td>Kendaraan dinas</td><td>Dikemudikan pemegang SIM yang sah; buku perjalanan diisi; tidak dipakai di luar kota tanpa surat tugas</td></tr>
+          <tr><td>Kerusakan dan kehilangan</td><td>Dilaporkan paling lambat 1 × 24 jam. Ganti rugi hanya bila terbukti karena kesengajaan atau kelalaian berat, dengan cicilan tetap dalam batas pemotongan 50% upah</td></tr>
+          <tr><td>Pemeriksaan</td><td>Inventarisasi aset dilakukan paling sedikit sekali setahun</td></tr>
+          <tr><td>Pengembalian</td><td>Seluruh aset dikembalikan paling lambat pada hari terakhir bekerja</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
     <!-- ============ BARU: TI, AI, HKI ============ -->
     <section class="bab" id="teknologi" data-title="TI, AI & kekayaan intelektual" data-group="Bagian IV · Perilaku">
-      <div class="bab-head"><span class="bab-no">Bab 15</span><h2>Teknologi informasi, AI, dan kekayaan intelektual</h2></div>
-      <h3>15.1 Penggunaan perangkat dan sistem lembaga</h3>
+      <div class="bab-head"><span class="bab-no">Bab 18</span><h2>Teknologi informasi, AI, dan kekayaan intelektual</h2></div>
+      <h3>18.1 Penggunaan perangkat dan sistem lembaga</h3>
       <ul>
         <li>Akun surel, aplikasi, dan perangkat lembaga digunakan untuk keperluan kerja. Lembaga dapat memantau penggunaan sistem secara proporsional untuk keamanan, dan hal itu diberitahukan kepada pegawai sebelumnya.</li>
         <li>Kata sandi tidak boleh dibagikan. Autentikasi dua langkah wajib untuk surel, sistem keuangan, sistem akademik, dan data pegawai.</li>
@@ -1151,7 +1450,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Perangkat pribadi yang dipakai untuk bekerja wajib memakai kunci layar, sistem yang diperbarui, dan pemisahan data kerja.</li>
         <li>Insiden keamanan (perangkat hilang, surel phishing, akun dibobol) dilaporkan ke bagian TI paling lambat 1 × 24 jam.</li>
       </ul>
-      <h3>15.2 Klasifikasi informasi</h3>
+      <h3>18.2 Klasifikasi informasi</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Kelas</th><th>Contoh</th><th>Perlakuan</th></tr></thead>
         <tbody>
@@ -1161,7 +1460,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
           <tr><td>Sangat rahasia</td><td>Data gaji, data kesehatan, data peserta didik, dokumen kasus disiplin</td><td>Akses sangat terbatas, terenkripsi, tercatat</td></tr>
         </tbody>
       </table></div>
-      <h3>15.3 Penggunaan AI generatif</h3>
+      <h3>18.3 Penggunaan AI generatif</h3>
       <ul>
         <li><b>Boleh</b> dipakai untuk membantu menyusun draf, merangkum, menerjemahkan, membuat ide materi ajar, dan menganalisis data yang tidak bersifat rahasia.</li>
         <li><b>Dilarang</b> memasukkan data pribadi pegawai atau peserta didik, data keuangan, soal ujian, dan dokumen rahasia ke layanan AI yang tidak disetujui lembaga.</li>
@@ -1170,7 +1469,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Dokumen resmi yang sebagian besar disusun dengan AI diberi keterangan bila diwajibkan pedoman unit.</li>
       </ul>
       <div class="note edu"><span class="tag">Lembaga pendidikan</span><p>Pendidik menetapkan aturan penggunaan AI untuk setiap tugas peserta didik (dilarang, dibolehkan dengan keterangan, atau dianjurkan) dan menyampaikannya sejak awal semester. Pelanggaran integritas akademik ditangani sesuai pedoman akademik, bukan semata berdasarkan alat pendeteksi AI.</p></div>
-      <h3>15.4 Hak kekayaan intelektual atas karya pegawai</h3>
+      <h3>18.4 Hak kekayaan intelektual atas karya pegawai</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Jenis karya</th><th>Ketentuan undang-undang</th><th>Kebijakan yang dianjurkan</th></tr></thead>
         <tbody>
@@ -1185,16 +1484,16 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BAB 11 ============ -->
     <section class="bab" id="pencegahan-kekerasan" data-title="Pencegahan kekerasan & pelecehan" data-group="Bagian IV · Perilaku">
-      <div class="bab-head"><span class="bab-no">Bab 16</span><h2>Pencegahan kekerasan dan pelecehan</h2></div>
+      <div class="bab-head"><span class="bab-no">Bab 19</span><h2>Pencegahan kekerasan dan pelecehan</h2></div>
       <p><span class="org">[Nama Lembaga]</span> menerapkan toleransi nol terhadap kekerasan seksual, perundungan, intimidasi, dan diskriminasi, baik oleh atasan, rekan, maupun pihak ketiga.</p>
-      <h3>16.1 Bentuk yang dilarang</h3>
+      <h3>19.1 Bentuk yang dilarang</h3>
       <ul>
         <li>Pelecehan seksual fisik dan nonfisik, termasuk komentar, isyarat, atau pesan bernuansa seksual.</li>
         <li>Kekerasan seksual berbasis elektronik, termasuk merekam atau menyebarkan konten tanpa persetujuan <span class="ps">UU 12/2022</span>.</li>
         <li>Perundungan, pengucilan, dan penghinaan berulang.</li>
         <li>Ancaman terhadap pekerjaan sebagai imbalan atau tekanan.</li>
       </ul>
-      <h3>16.2 Mekanisme pelaporan</h3>
+      <h3>19.2 Mekanisme pelaporan</h3>
       <div class="flow">
         <div class="step"><i>1</i><b>Lapor</b><span>Ke satuan tugas/tim, SDM, atau kanal anonim</span></div>
         <div class="step"><i>2</i><b>Pendampingan</b><span>Pelindungan korban, pemisahan dari terlapor</span></div>
@@ -1207,9 +1506,9 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BARU: PELAPORAN & DARURAT ============ -->
     <section class="bab" id="pelaporan" data-title="Pelaporan pelanggaran & darurat" data-group="Bagian IV · Perilaku">
-      <div class="bab-head"><span class="bab-no">Bab 17</span><h2>Pelaporan pelanggaran dan keadaan darurat</h2></div>
-      <h3>17.1 Sistem pelaporan pelanggaran (whistleblowing)</h3>
-      <p>Saluran ini untuk dugaan kecurangan, korupsi, suap, penyalahgunaan anggaran, manipulasi nilai atau data, pelanggaran K3 yang serius, dan pelanggaran hukum lainnya. Kasus kekerasan seksual dan perundungan memakai mekanisme Bab 16.</p>
+      <div class="bab-head"><span class="bab-no">Bab 20</span><h2>Pelaporan pelanggaran dan keadaan darurat</h2></div>
+      <h3>20.1 Sistem pelaporan pelanggaran (whistleblowing)</h3>
+      <p>Saluran ini untuk dugaan kecurangan, korupsi, suap, penyalahgunaan anggaran, manipulasi nilai atau data, pelanggaran K3 yang serius, dan pelanggaran hukum lainnya. Kasus kekerasan seksual dan perundungan memakai mekanisme Bab 19.</p>
       <div class="flow">
         <div class="step"><i>1</i><b>Lapor</b><span>Surel khusus, kotak aduan, atau formulir daring; boleh anonim</span></div>
         <div class="step"><i>2</i><b>Telaah</b><span>Tim independen menilai laporan dalam 10 hari kerja</span></div>
@@ -1222,7 +1521,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Laporan yang terbukti sengaja palsu dan merugikan orang lain dapat dikenai sanksi disiplin.</li>
         <li>Tim yang menangani tidak boleh memiliki hubungan dengan terlapor.</li>
       </ul>
-      <h3>17.2 Keadaan darurat dan bencana</h3>
+      <h3>20.2 Keadaan darurat dan bencana</h3>
       <p>Keadaan darurat meliputi bencana alam, kebakaran, wabah penyakit, gangguan keamanan, dan gangguan besar pada sistem. Pimpinan dapat menetapkan status darurat dan langkah sementara berikut:</p>
       <ul>
         <li>Kerja dari rumah, pembelajaran jarak jauh, atau pembagian jadwal kerja secara bergiliran.</li>
@@ -1231,8 +1530,8 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Prioritas keselamatan: tidak ada pegawai yang diwajibkan masuk ke area berbahaya.</li>
         <li>Bantuan darurat bagi pegawai terdampak, seperti santunan, cuti khusus, dan pinjaman tanpa bunga.</li>
       </ul>
-      <p>PHK dengan alasan keadaan memaksa hanya ditempuh setelah upaya lain dilakukan dan mengikuti prosedur Bab 20.</p>
-      <h3>17.3 Rantai komunikasi darurat</h3>
+      <p>PHK dengan alasan keadaan memaksa hanya ditempuh setelah upaya lain dilakukan dan mengikuti prosedur Bab 24.</p>
+      <h3>20.3 Rantai komunikasi darurat</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Peran</th><th>Nama</th><th>Kontak</th></tr></thead>
         <tbody>
@@ -1247,15 +1546,15 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BAB 12 ============ -->
     <section class="bab" id="kinerja" data-title="Kinerja & pengembangan" data-group="Bagian IV · Perilaku">
-      <div class="bab-head"><span class="bab-no">Bab 18</span><h2>Penilaian kinerja dan pengembangan</h2></div>
-      <h3>18.1 Siklus kinerja tahunan</h3>
+      <div class="bab-head"><span class="bab-no">Bab 21</span><h2>Penilaian kinerja dan pengembangan</h2></div>
+      <h3>21.1 Siklus kinerja tahunan</h3>
       <div class="timeline">
         <div class="tl"><time>Jan / Juli</time><div><b>Penetapan sasaran.</b> Sasaran kerja disepakati atasan dan pegawai, terukur dan terkait rencana lembaga. Lembaga pendidikan mengikuti awal tahun ajaran.</div></div>
         <div class="tl"><time>Tengah periode</time><div><b>Tinjauan berkala.</b> Percakapan umpan balik dan penyesuaian sasaran bila ada perubahan tugas.</div></div>
         <div class="tl"><time>Akhir periode</time><div><b>Penilaian.</b> Penilaian diri, penilaian atasan, dan bukti kerja. Hasil dibahas tatap muka.</div></div>
         <div class="tl"><time>Setelah penilaian</time><div><b>Tindak lanjut.</b> Kenaikan upah berkala, rencana pengembangan, atau program perbaikan kinerja selama 2–3 bulan.</div></div>
       </div>
-      <h3>18.2 Skala penilaian</h3>
+      <h3>21.2 Skala penilaian</h3>
       <div class="tablewrap"><table>
         <thead><tr><th class="num">Nilai</th><th>Predikat</th><th>Arti</th></tr></thead>
         <tbody>
@@ -1267,16 +1566,64 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p>Kinerja rendah ditangani melalui pembinaan dan program perbaikan kinerja tertulis sebelum menempuh jalur disiplin. Kinerja rendah bukan pelanggaran disiplin dengan sendirinya.</p>
-      <h3>18.3 Pengembangan kompetensi</h3>
+      <h3>21.3 Pengembangan kompetensi</h3>
       <p>Setiap pegawai berhak atas pelatihan untuk meningkatkan kompetensi <span class="ps">UU 13/2003 Ps. 11–12</span>. Lembaga menyusun rencana pelatihan tahunan dan mendukung sertifikasi kompetensi dari lembaga yang diakui BNSP. Pegawai yang mengikuti pendidikan atau pelatihan dengan biaya besar dari lembaga dapat terikat ikatan dinas yang lamanya wajar dan disepakati tertulis.</p>
+    </section>
+
+    <!-- ============ BARU: KOMUNIKASI & BUDAYA ============ -->
+    <section class="bab" id="budaya" data-title="Komunikasi & budaya kerja" data-group="Bagian IV · Perilaku">
+      <div class="bab-head"><span class="bab-no">Bab 22</span><h2>Komunikasi dan budaya kerja</h2></div>
+      <h3>22.1 Saluran komunikasi internal</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Keperluan</th><th>Saluran</th><th>Waktu tanggap</th></tr></thead>
+        <tbody>
+          <tr><td>Pengumuman resmi, kebijakan, surat keputusan</td><td>Surel lembaga dan papan pengumuman/portal</td><td>Dibaca dalam 1 hari kerja</td></tr>
+          <tr><td>Koordinasi tugas harian</td><td>Grup pesan unit [aplikasi resmi]</td><td>Pada jam kerja</td></tr>
+          <tr><td>Hal pribadi dan kepegawaian</td><td>Bagian SDM secara langsung atau surel</td><td>Paling lambat 3 hari kerja</td></tr>
+          <tr><td>Keadaan darurat</td><td>Telepon dan rantai komunikasi darurat (Bab 20)</td><td>Segera</td></tr>
+        </tbody>
+      </table></div>
+      <p>Pesan di luar jam kerja dibatasi untuk hal yang mendesak. Pegawai tidak wajib menanggapi pesan non-darurat di luar jam kerja, hari libur, atau saat cuti.</p>
+
+      <h3>22.2 Rapat</h3>
+      <ul>
+        <li>Rapat berkala: rapat unit [mingguan], rapat pimpinan [bulanan], dan pertemuan seluruh pegawai [per semester].</li>
+        <li>Undangan memuat agenda, waktu, dan bahan paling lambat 1 hari kerja sebelumnya.</li>
+        <li>Rapat dimulai tepat waktu, dibatasi paling lama [90] menit, dan menghasilkan notula yang memuat keputusan, penanggung jawab, dan tenggat.</li>
+        <li>Rapat di luar jam kerja atas perintah lembaga dihitung sebagai waktu kerja.</li>
+      </ul>
+
+      <h3>22.3 Survei dan suara pegawai</h3>
+      <ul>
+        <li>Survei keterlibatan dan kepuasan pegawai dilakukan paling sedikit sekali setahun secara anonim.</li>
+        <li>Hasil survei dan rencana tindak lanjutnya diumumkan kepada pegawai paling lambat 2 bulan setelah survei ditutup.</li>
+        <li>Kotak saran dan forum tanya jawab dengan pimpinan diadakan secara berkala.</li>
+        <li>Wawancara keluar (Lampiran B) dirangkum setiap semester untuk perbaikan lembaga tanpa menyebut identitas.</li>
+      </ul>
+
+      <h3>22.4 Penghargaan</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Penghargaan</th><th>Kriteria</th><th>Bentuk</th></tr></thead>
+        <tbody>
+          <tr><td>Pegawai/pendidik teladan tahunan</td><td>Kinerja "Sangat baik", integritas, kontribusi bagi tim</td><td>Piagam dan [hadiah/insentif]</td></tr>
+          <tr><td>Penghargaan inovasi</td><td>Gagasan yang diterapkan dan memberi manfaat terukur</td><td>Piagam dan [insentif]</td></tr>
+          <tr><td>Kehadiran penuh</td><td>Tanpa ketidakhadiran tanpa keterangan dan keterlambatan selama setahun</td><td>Piagam</td></tr>
+          <tr><td>Masa bakti</td><td>5, 10, 15, 20, 25 tahun (Bab 13)</td><td>Piagam dan cendera mata</td></tr>
+          <tr><td>Apresiasi rekan</td><td>Usulan sesama pegawai</td><td>Pengumuman dan ucapan terima kasih resmi</td></tr>
+        </tbody>
+      </table></div>
+      <p>Penilaian penghargaan dilakukan oleh panitia yang terdiri atas wakil pimpinan dan wakil pegawai. Cuti melahirkan, sakit dengan surat dokter, dan cuti lain yang sah tidak mengurangi peluang mendapat penghargaan.</p>
+
+      <h3>22.5 Kegiatan bersama</h3>
+      <p>Kegiatan kebersamaan seperti olahraga, peringatan hari besar, dan kegiatan sosial bersifat sukarela bila diadakan di luar jam kerja. Kegiatan yang diwajibkan lembaga dihitung sebagai waktu kerja dan memperhatikan keberagaman agama serta kondisi pegawai.</p>
     </section>
 
     <!-- ============ BAB 13 ============ -->
     <section class="bab" id="disiplin" data-title="Disiplin & sanksi" data-group="Bagian V · Pengakhiran">
-      <div class="bab-head"><span class="bab-no">Bab 19</span><h2>Disiplin dan sanksi</h2></div>
-      <h3>19.1 Prinsip</h3>
+      <div class="bab-head"><span class="bab-no">Bab 23</span><h2>Disiplin dan sanksi</h2></div>
+      <h3>23.1 Prinsip</h3>
       <p>Tindakan disiplin bersifat mendidik, proporsional, dan didahului kesempatan bagi pegawai untuk memberikan keterangan. Setiap sanksi dibuat tertulis dan disimpan dalam berkas pegawai.</p>
-      <h3>19.2 Tingkatan sanksi</h3>
+      <h3>23.2 Tingkatan sanksi</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Tingkat</th><th>Contoh pelanggaran</th><th>Masa berlaku</th></tr></thead>
         <tbody>
@@ -1284,21 +1631,21 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
           <tr><td>Surat Peringatan I</td><td>Terlambat berulang, tidak mengikuti prosedur kerja</td><td>Paling lama 6 bulan</td></tr>
           <tr><td>Surat Peringatan II</td><td>Mengulangi pelanggaran selama SP I berlaku</td><td>Paling lama 6 bulan</td></tr>
           <tr><td>Surat Peringatan III</td><td>Mengulangi pelanggaran selama SP II berlaku</td><td>Paling lama 6 bulan</td></tr>
-          <tr><td>PHK</td><td>Pelanggaran selama SP III berlaku, atau pelanggaran bersifat mendesak yang diatur dalam PK/PP/PKB</td><td>Melalui prosedur Bab 20</td></tr>
+          <tr><td>PHK</td><td>Pelanggaran selama SP III berlaku, atau pelanggaran bersifat mendesak yang diatur dalam PK/PP/PKB</td><td>Melalui prosedur Bab 24</td></tr>
         </tbody>
       </table></div>
       <p>Dasar: PP 35/2021 Ps. 52. PK, PP, atau PKB dapat mengatur lain, misalnya langsung SP III untuk pelanggaran tertentu.</p>
-      <h3>19.3 Pelanggaran bersifat mendesak</h3>
+      <h3>23.3 Pelanggaran bersifat mendesak</h3>
       <p>Contoh yang lazim dicantumkan dalam PP/PKB: penipuan atau penggelapan, memberikan keterangan palsu, mabuk atau memakai narkotika di tempat kerja, kekerasan atau ancaman, kekerasan seksual, sengaja merusak aset, dan membocorkan rahasia. Untuk dugaan tindak pidana, lembaga tetap menghormati asas praduga tak bersalah. Pegawai dapat diberhentikan sementara (skorsing) dengan upah tetap dibayar selama proses.</p>
-      <h3>19.4 Mangkir</h3>
+      <h3>23.4 Mangkir</h3>
       <p>Pegawai yang tidak masuk 5 hari kerja atau lebih berturut-turut tanpa keterangan tertulis dengan bukti sah, dan telah dipanggil 2 kali secara patut dan tertulis, dapat diputus hubungan kerjanya karena dikualifikasikan mengundurkan diri <span class="ps">PP 35/2021 Ps. 51</span>.</p>
     </section>
 
     <!-- ============ BAB 14 ============ -->
     <section class="bab" id="phk" data-title="PHK & pesangon" data-group="Bagian V · Pengakhiran">
-      <div class="bab-head"><span class="bab-no">Bab 20</span><h2>Pengakhiran hubungan kerja dan pesangon</h2></div>
+      <div class="bab-head"><span class="bab-no">Bab 24</span><h2>Pengakhiran hubungan kerja dan pesangon</h2></div>
       <p>Semua pihak wajib mengupayakan agar PHK tidak terjadi. Putusan MK 168 menegaskan bahwa PHK yang tidak dapat dihindari wajib dirundingkan secara musyawarah dalam bipartit, dan selama perselisihan belum berkekuatan hukum tetap kedua pihak tetap melaksanakan kewajibannya.</p>
-      <h3>20.1 Prosedur PHK oleh lembaga</h3>
+      <h3>24.1 Prosedur PHK oleh lembaga</h3>
       <div class="flow">
         <div class="step"><i>1</i><b>Pemberitahuan</b><span>Tertulis, memuat alasan, paling lama 14 hari kerja sebelumnya</span></div>
         <div class="step"><i>2</i><b>Tanggapan</b><span>Pegawai menolak secara tertulis paling lama 7 hari kerja</span></div>
@@ -1307,9 +1654,9 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <div class="step"><i>5</i><b>PHI</b><span>Gugatan ke Pengadilan Hubungan Industrial</span></div>
       </div>
       <p>PHK dilarang dengan alasan: sakit kurang dari 12 bulan terus-menerus; memenuhi kewajiban negara atau ibadah; menikah; hamil, melahirkan, keguguran, atau menyusui; hubungan darah atau perkawinan dengan rekan kerja (kecuali diatur PK/PP/PKB); aktivitas serikat pekerja; melaporkan tindak pidana lembaga; perbedaan agama, suku, jenis kelamin, kondisi fisik, atau status perkawinan; cacat atau sakit akibat kerja yang masa penyembuhannya belum pasti <span class="ps">UU 13/2003 Ps. 153</span>.</p>
-      <h3>20.2 Pengunduran diri</h3>
+      <h3>24.2 Pengunduran diri</h3>
       <p>Pegawai mengajukan permohonan tertulis paling lambat <b>30 hari</b> sebelum tanggal berhenti, tidak terikat ikatan dinas, dan tetap bekerja sampai tanggal tersebut. Pegawai berhak uang penggantian hak dan uang pisah sesuai PK/PP/PKB.</p>
-      <h3>20.3 Tabel dasar perhitungan <span class="status st-ok">Berlaku</span></h3>
+      <h3>24.3 Tabel dasar perhitungan <span class="status st-ok">Berlaku</span></h3>
       <div class="grid2">
         <div class="tablewrap" style="margin:0"><table>
           <thead><tr><th>Masa kerja</th><th class="num">Uang pesangon (UP)</th></tr></thead>
@@ -1340,7 +1687,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </table></div>
       </div>
       <p style="margin-top:var(--s4)"><b>Uang penggantian hak (UPH)</b> meliputi cuti tahunan yang belum diambil dan belum gugur, biaya pulang ke tempat asal pegawai dan keluarga, serta hal lain yang ditetapkan dalam PK/PP/PKB. Upah yang menjadi dasar adalah upah pokok + tunjangan tetap <span class="ps">UU 6/2023 Ps. 81 angka 47</span>.</p>
-      <h3>20.4 Pengali menurut alasan PHK</h3>
+      <h3>24.4 Pengali menurut alasan PHK</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Alasan PHK</th><th class="num">UP</th><th class="num">UPMK</th><th>Pasal PP 35/2021</th></tr></thead>
         <tbody>
@@ -1364,7 +1711,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p>Semua alasan di atas juga menerima UPH. Ketentuan PK/PP/PKB yang lebih tinggi tetap berlaku.</p>
       <div class="note new"><span class="tag">UU baru</span><p>UU Pelindungan Ketenagakerjaan menghapus pengali 0,5 dan menetapkan pengali minimal 1 kali, serta memperketat PHK dengan alasan efisiensi. Setelah aturan ini berlaku, baris dengan pengali 0,5 dan 0,75 di atas akan berubah. Kalkulator di Lampiran A menyediakan mode simulasi untuk membandingkan keduanya.</p></div>
-      <h3>20.5 Proses keluar (offboarding)</h3>
+      <h3>24.5 Proses keluar (offboarding)</h3>
       <ul>
         <li>Serah terima pekerjaan, dokumen, dan aset dengan berita acara.</li>
         <li>Pengembalian seluruh dokumen pribadi asli milik pegawai.</li>
@@ -1377,15 +1724,15 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
 
     <!-- ============ BAB 15 ============ -->
     <section class="bab" id="hubungan-industrial" data-title="Hubungan industrial" data-group="Bagian V · Pengakhiran">
-      <div class="bab-head"><span class="bab-no">Bab 21</span><h2>Hubungan industrial dan penyelesaian perselisihan</h2></div>
-      <h3>21.1 Sarana hubungan industrial</h3>
+      <div class="bab-head"><span class="bab-no">Bab 25</span><h2>Hubungan industrial dan penyelesaian perselisihan</h2></div>
+      <h3>25.1 Sarana hubungan industrial</h3>
       <ul>
         <li><b>Serikat pekerja.</b> Dapat dibentuk oleh sekurang-kurangnya 10 pegawai. Lembaga dilarang menghalangi pembentukan dan kegiatannya <span class="ps">UU 21/2000</span>.</li>
         <li><b>Lembaga Kerja Sama Bipartit.</b> Wajib dibentuk bila pegawai berjumlah 50 orang atau lebih <span class="ps">UU 13/2003 Ps. 106</span>.</li>
         <li><b>Peraturan Perusahaan.</b> Wajib bagi 10 pegawai atau lebih, berlaku paling lama 2 tahun dan wajib diperbarui.</li>
         <li><b>PKB.</b> Dirundingkan dengan serikat pekerja, berlaku paling lama 2 tahun dan dapat diperpanjang 1 tahun.</li>
       </ul>
-      <h3>21.2 Jenis perselisihan</h3>
+      <h3>25.2 Jenis perselisihan</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Jenis</th><th>Contoh</th><th>Jalur tripartit</th></tr></thead>
         <tbody>
@@ -1396,9 +1743,9 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p>Bipartit diselesaikan paling lama 30 hari kerja. Bila gagal, salah satu pihak mencatatkan perselisihan ke dinas ketenagakerjaan dengan bukti perundingan. Mediasi atau konsiliasi berlangsung paling lama 30 hari kerja. Bila anjuran ditolak, perselisihan diajukan ke PHI pada pengadilan negeri <span class="ps">UU 2/2004</span>.</p>
-      <h3>21.3 Pengaduan internal</h3>
+      <h3>25.3 Pengaduan internal</h3>
       <p>Sebelum menempuh jalur formal, pegawai dapat menyampaikan keluhan kepada atasan langsung, lalu kepada bagian SDM bila belum selesai dalam 7 hari kerja, lalu kepada pimpinan lembaga. Setiap pengaduan dijawab tertulis.</p>
-      <h3>21.4 Mogok kerja</h3>
+      <h3>25.4 Mogok kerja</h3>
       <p>Mogok kerja adalah hak dasar pekerja dan serikat pekerja yang dilakukan secara sah, tertib, dan damai sebagai akibat gagalnya perundingan <span class="ps">UU 13/2003 Ps. 137–145</span>.</p>
       <ul>
         <li>Pemberitahuan tertulis kepada lembaga dan dinas ketenagakerjaan paling lambat <b>7 hari kerja</b> sebelum mogok, memuat waktu mulai dan berakhir, tempat, alasan, serta tanda tangan penanggung jawab.</li>
@@ -1407,15 +1754,15 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Mogok yang sah karena lembaga melanggar hak normatif tetap disertai pembayaran upah.</li>
         <li>Mogok yang tidak memenuhi syarat dapat dikualifikasikan sebagai mangkir.</li>
       </ul>
-      <h3>21.5 Penutupan perusahaan (lock-out)</h3>
+      <h3>25.5 Penutupan perusahaan (lock-out)</h3>
       <p>Lembaga dapat menolak pekerja seluruhnya atau sebagian untuk bekerja hanya sebagai akibat gagalnya perundingan, dengan pemberitahuan tertulis kepada pekerja/serikat dan dinas paling lambat 7 hari kerja sebelumnya <span class="ps">UU 13/2003 Ps. 146–149</span>. Lock-out tidak boleh dilakukan sebagai balasan atas tuntutan hak normatif, dan dilarang pada lembaga yang melayani kepentingan umum, termasuk satuan pendidikan dan rumah sakit.</p>
     </section>
 
     <!-- ============ BARU: SANKSI BAGI LEMBAGA ============ -->
     <section class="bab" id="sanksi-lembaga" data-title="Pengawasan & sanksi bagi lembaga" data-group="Bagian V · Pengakhiran">
-      <div class="bab-head"><span class="bab-no">Bab 22</span><h2>Pengawasan dan sanksi bagi lembaga</h2></div>
+      <div class="bab-head"><span class="bab-no">Bab 26</span><h2>Pengawasan dan sanksi bagi lembaga</h2></div>
       <p>Pimpinan dan pengurus yayasan perlu memahami bahwa banyak hak normatif pegawai dilindungi dengan sanksi pidana, bukan hanya sanksi administratif. Pengawasan dilakukan oleh pengawas ketenagakerjaan di tingkat provinsi, dan pegawai dapat melapor langsung kepada mereka.</p>
-      <h3>22.1 Sanksi pidana yang paling sering terkait</h3>
+      <h3>26.1 Sanksi pidana yang paling sering terkait</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Pelanggaran</th><th>Ancaman</th><th>Dasar</th></tr></thead>
         <tbody>
@@ -1429,14 +1776,14 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p>Penjatuhan pidana tidak menghapus kewajiban lembaga membayar hak pegawai. Angka di atas adalah ringkasan; rujukan pastinya adalah naskah pasal.</p>
-      <h3>22.2 Sanksi administratif</h3>
+      <h3>26.2 Sanksi administratif</h3>
       <ul>
         <li>Teguran tertulis, pembatasan kegiatan usaha, penghentian sementara sebagian atau seluruh alat produksi, sampai pembekuan kegiatan usaha.</li>
         <li>Untuk BPJS: tidak mendapat pelayanan publik tertentu (perizinan, tender, izin mempekerjakan TKA) sampai kewajiban dipenuhi <span class="ps">PP 86/2013</span>.</li>
         <li>Untuk alih daya yang melanggar Permenaker 7/2026: peringatan tertulis sampai pembatasan kegiatan usaha.</li>
-        <li>Untuk keterlambatan upah dan THR: denda yang wajib dibayar kepada pegawai (Bab 9).</li>
+        <li>Untuk keterlambatan upah dan THR: denda yang wajib dibayar kepada pegawai (Bab 10).</li>
       </ul>
-      <h3>22.3 Menghadapi pemeriksaan pengawas</h3>
+      <h3>26.3 Menghadapi pemeriksaan pengawas</h3>
       <ol>
         <li>Terima pengawas dengan surat tugas yang sah dan tunjuk pendamping dari bagian SDM.</li>
         <li>Siapkan dokumen: daftar pegawai, perjanjian kerja, bukti pencatatan PKWT, PP/PKB yang disahkan, daftar upah, bukti iuran BPJS, catatan lembur, dokumen K3, WLKP.</li>
@@ -1445,11 +1792,143 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </ol>
     </section>
 
+    <!-- ============ BARU: PANDUAN ATASAN ============ -->
+    <section class="bab" id="atasan" data-title="Panduan untuk atasan" data-group="Bagian VI · Manajemen">
+      <div class="bab-head"><span class="bab-no">Bab 27</span><h2>Panduan untuk atasan</h2></div>
+      <p>Atasan langsung adalah wajah lembaga bagi pegawai. Bab ini merangkum cara atasan menjalankan kebijakan dalam buku ini secara adil dan konsisten.</p>
+
+      <h3>27.1 Percakapan rutin</h3>
+      <ul>
+        <li>Pertemuan empat mata dengan setiap bawahan paling sedikit [sekali sebulan], 20–30 menit, untuk membahas kemajuan kerja, hambatan, dan kebutuhan pengembangan.</li>
+        <li>Atasan mendengarkan lebih banyak daripada berbicara, mencatat kesepakatan, dan menindaklanjutinya pada pertemuan berikutnya.</li>
+        <li>Masalah kinerja dibicarakan sejak awal, bukan disimpan sampai penilaian akhir tahun.</li>
+      </ul>
+
+      <h3>27.2 Memberi umpan balik</h3>
+      <p>Gunakan pola <b>Situasi – Perilaku – Dampak – Harapan</b>:</p>
+      <div class="flow">
+        <div class="step"><i>S</i><b>Situasi</b><span>Kapan dan di mana: "Pada rapat orang tua Kamis lalu…"</span></div>
+        <div class="step"><i>P</i><b>Perilaku</b><span>Apa yang terlihat, bukan tafsiran sifat: "…laporan nilai belum siap…"</span></div>
+        <div class="step"><i>D</i><b>Dampak</b><span>Akibatnya bagi tim atau layanan: "…orang tua menunggu 30 menit."</span></div>
+        <div class="step"><i>H</i><b>Harapan</b><span>Apa yang disepakati ke depan: "Mulai bulan depan laporan siap H-1."</span></div>
+      </div>
+      <p>Umpan balik positif disampaikan dengan pola yang sama agar pegawai tahu perilaku mana yang perlu dipertahankan. Kritik disampaikan secara pribadi, bukan di depan umum atau di grup pesan.</p>
+
+      <h3>27.3 Menangani keluhan pegawai</h3>
+      <ol>
+        <li>Terima keluhan tanpa menghakimi dan catat faktanya: siapa, apa, kapan, di mana.</li>
+        <li>Pastikan jenis keluhan. Kekerasan seksual dan perundungan langsung dirujuk ke satuan tugas (Bab 19); dugaan kecurangan dirujuk ke saluran pelaporan pelanggaran (Bab 20).</li>
+        <li>Untuk keluhan kerja biasa (beban kerja, jadwal, fasilitas), beri tanggapan paling lambat 7 hari kerja.</li>
+        <li>Bila di luar kewenangan, teruskan kepada bagian SDM dan beri tahu pegawai siapa yang menanganinya.</li>
+        <li>Jaga kerahasiaan dan pastikan pegawai tidak mengalami pembalasan karena menyampaikan keluhan.</li>
+      </ol>
+
+      <h3>27.4 Wawancara pemeriksaan disiplin</h3>
+      <ol>
+        <li><b>Persiapan.</b> Kumpulkan bukti (presensi, dokumen, keterangan saksi) dan pastikan pasal PP/PKB yang diduga dilanggar.</li>
+        <li><b>Undangan.</b> Panggil pegawai secara tertulis dengan menyebut pokok masalah, waktu, dan tempat. Pegawai boleh didampingi wakil serikat pekerja atau rekan.</li>
+        <li><b>Pelaksanaan.</b> Dihadiri atasan dan bagian SDM. Sampaikan dugaan secara jelas, beri pegawai kesempatan penuh untuk menjelaskan, dan jangan menyimpulkan di tempat.</li>
+        <li><b>Berita acara.</b> Catat keterangan dan minta pegawai menandatanganinya. Bila menolak, catat penolakan tersebut.</li>
+        <li><b>Keputusan.</b> Ditetapkan paling lambat 7 hari kerja kemudian, sebanding dengan pelanggaran, dan konsisten dengan kasus serupa (Bab 23).</li>
+      </ol>
+      <div class="note warn"><span class="tag">Hindari</span><p>Memaksa pegawai menandatangani surat pengunduran diri, mengancam PHK di luar prosedur, memeriksa ponsel pribadi pegawai tanpa persetujuan, atau mengumumkan dugaan pelanggaran sebelum terbukti.</p></div>
+
+      <h3>27.5 Matriks kewenangan</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Keputusan</th><th>Atasan langsung</th><th>Kepala unit / manajer</th><th>Bagian SDM</th><th>Pimpinan lembaga</th></tr></thead>
+        <tbody>
+          <tr><td>Cuti tahunan dan izin</td><td>Menyetujui</td><td>Bila lebih dari [5] hari kerja</td><td>Mencatat sisa cuti</td><td>–</td></tr>
+          <tr><td>Cuti melahirkan, sakit panjang</td><td>Mengetahui</td><td>Mengetahui</td><td>Memproses</td><td>–</td></tr>
+          <tr><td>Perintah lembur</td><td>Mengusulkan</td><td>Menyetujui</td><td>Menghitung upah lembur</td><td>Bila lebih dari [anggaran]</td></tr>
+          <tr><td>Perjalanan dinas</td><td>Mengusulkan</td><td>Menyetujui dalam kota/provinsi</td><td>Memproses</td><td>Luar provinsi/luar negeri</td></tr>
+          <tr><td>Penggantian biaya</td><td>Memeriksa</td><td>Menyetujui sampai Rp[ ... ]</td><td>Memverifikasi</td><td>Di atas Rp[ ... ]</td></tr>
+          <tr><td>Teguran lisan</td><td>Memberi</td><td>–</td><td>Mencatat</td><td>–</td></tr>
+          <tr><td>SP I dan SP II</td><td>Mengusulkan</td><td>Menetapkan</td><td>Memeriksa kesesuaian</td><td>–</td></tr>
+          <tr><td>SP III dan PHK</td><td>Mengusulkan</td><td>Mengusulkan</td><td>Memeriksa dan merundingkan</td><td>Menetapkan</td></tr>
+          <tr><td>Rekrutmen dan pengangkatan</td><td>Mengusulkan kebutuhan</td><td>Mewawancarai</td><td>Menyelenggarakan</td><td>Menetapkan</td></tr>
+          <tr><td>Kenaikan gaji dan promosi</td><td>Menilai kinerja</td><td>Mengusulkan</td><td>Menghitung</td><td>Menetapkan</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>27.6 Kewajiban atasan lainnya</h3>
+      <ul>
+        <li>Mengenalkan buku panduan dan PP/PKB kepada pegawai baru pada minggu pertama.</li>
+        <li>Memastikan pembagian tugas, jadwal, dan lembur adil dan tercatat.</li>
+        <li>Memberi contoh dalam kehadiran, kerahasiaan, dan perilaku.</li>
+        <li>Melaporkan kecelakaan kerja, insiden keamanan, dan dugaan pelanggaran serius tanpa menunda.</li>
+        <li>Tidak meminta bawahan mengerjakan urusan pribadi atasan.</li>
+      </ul>
+    </section>
+
+    <!-- ============ BARU: ADMINISTRASI ============ -->
+    <section class="bab" id="administrasi" data-title="Administrasi kepegawaian" data-group="Bagian VI · Manajemen">
+      <div class="bab-head"><span class="bab-no">Bab 28</span><h2>Administrasi kepegawaian</h2></div>
+      <h3>28.1 Isi berkas personalia</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Bagian berkas</th><th>Dokumen</th></tr></thead>
+        <tbody>
+          <tr><td>Identitas</td><td>Salinan KTP, KK, NPWP/NIK untuk pajak, pas foto, kontak darurat</td></tr>
+          <tr><td>Rekrutmen</td><td>Surat lamaran, CV, salinan ijazah dan sertifikat, hasil seleksi, surat penawaran</td></tr>
+          <tr><td>Hubungan kerja</td><td>Perjanjian kerja, bukti pencatatan PKWT, SK pengangkatan, adendum, pernyataan penerimaan buku panduan, perjanjian kerahasiaan</td></tr>
+          <tr><td>Karier</td><td>SK mutasi, promosi, penugasan, Plt; hasil penilaian kinerja; catatan pelatihan; perjanjian ikatan dinas</td></tr>
+          <tr><td>Penggajian</td><td>Golongan dan tingkat upah, rekening, status PTKP, kepesertaan BPJS</td></tr>
+          <tr><td>Kehadiran dan cuti</td><td>Rekap presensi, permohonan cuti, surat dokter</td></tr>
+          <tr><td>Disiplin</td><td>Berita acara pemeriksaan, surat peringatan (disimpan terpisah dengan akses terbatas)</td></tr>
+          <tr><td>Pendidik</td><td>Sertifikat pendidik, NUPTK, SK yayasan berurutan, dokumen jabatan akademik dan inpassing</td></tr>
+          <tr><td>Pengakhiran</td><td>Surat pengunduran diri atau PHK, perhitungan hak, berita acara serah terima, surat keterangan kerja</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>Akses berkas dibatasi pada bagian SDM, pimpinan, dan atasan langsung untuk dokumen yang relevan. Setiap akses ke berkas digital tercatat.</li>
+        <li>Pegawai berhak melihat berkasnya sendiri dan meminta perbaikan data yang salah <span class="ps">UU 27/2022</span>.</li>
+        <li>Data kesehatan dan hasil pemeriksaan disiplin disimpan terpisah dari berkas umum.</li>
+        <li>Pegawai melaporkan perubahan data (alamat, status perkawinan, anak, rekening) paling lambat 14 hari sejak perubahan.</li>
+      </ul>
+
+      <h3>28.2 Jadwal retensi arsip</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Jenis arsip</th><th>Lama simpan</th><th>Setelah masa simpan</th></tr></thead>
+        <tbody>
+          <tr><td>Berkas personalia pegawai</td><td>10 tahun setelah pegawai keluar</td><td>Dimusnahkan dengan berita acara, kecuali dokumen bernilai sejarah</td></tr>
+          <tr><td>Daftar upah, bukti potong dan setor pajak</td><td>10 tahun</td><td>Dimusnahkan dengan berita acara</td></tr>
+          <tr><td>Bukti pembayaran iuran BPJS</td><td>10 tahun</td><td>Dimusnahkan dengan berita acara</td></tr>
+          <tr><td>Dokumen PHK dan perselisihan</td><td>10 tahun setelah perkara selesai</td><td>Dimusnahkan dengan berita acara</td></tr>
+          <tr><td>Lamaran pelamar yang tidak diterima</td><td>[1] tahun, atau lebih lama hanya dengan persetujuan pelamar</td><td>Dihapus</td></tr>
+          <tr><td>Rekaman CCTV</td><td>[30] hari, kecuali diperlukan untuk pemeriksaan</td><td>Ditimpa otomatis</td></tr>
+          <tr><td>Laporan kecelakaan kerja</td><td>10 tahun</td><td>Dimusnahkan dengan berita acara</td></tr>
+          <tr><td>SK yayasan pendidik</td><td>Permanen selama lembaga berdiri</td><td>–</td></tr>
+        </tbody>
+      </table></div>
+      <p class="hint">Masa simpan 10 tahun menyesuaikan kewajiban penyimpanan dokumen perpajakan dan kemungkinan sengketa. Pemusnahan dilakukan dengan cara yang membuat data tidak dapat dipulihkan.</p>
+
+      <h3>28.3 Penggantian biaya (reimbursement)</h3>
+      <ol>
+        <li>Biaya yang dapat diganti adalah pengeluaran untuk kepentingan dinas yang telah disetujui atasan sebelumnya, misalnya alat tulis mendesak, ongkos kirim, biaya parkir dan tol saat tugas, konsumsi rapat dengan tamu, atau biaya pelatihan yang disetujui.</li>
+        <li>Pegawai mengajukan formulir klaim (Lampiran B) beserta bukti asli atau elektronik paling lambat [30] hari setelah pengeluaran.</li>
+        <li>Atasan memeriksa, bagian keuangan memverifikasi, lalu pembayaran dilakukan paling lambat [14] hari kerja setelah klaim lengkap, bersama gaji atau melalui transfer terpisah.</li>
+        <li>Pengeluaran tanpa bukti hanya diganti sampai Rp[ ... ] dengan surat pernyataan.</li>
+        <li>Klaim ganda atau bukti yang dipalsukan diproses sebagai pelanggaran berat.</li>
+      </ol>
+
+      <h3>28.4 Kalender administrasi SDM tahunan</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Bulan</th><th>Kegiatan</th></tr></thead>
+        <tbody>
+          <tr><td>Januari</td><td>Penyesuaian upah minimum dan kenaikan gaji; bukti potong 1721-A1; rencana pelatihan tahunan</td></tr>
+          <tr><td>Februari–Maret</td><td>Pembaruan data PTKP dan BPJS; penyesuaian batas upah JP</td></tr>
+          <tr><td>Menjelang hari raya</td><td>Perhitungan dan pembayaran THR</td></tr>
+          <tr><td>Juni–Juli</td><td>Penilaian kinerja pendidik akhir tahun ajaran; perpanjangan PKWT pendidik; penetapan beban mengajar</td></tr>
+          <tr><td>Agustus–September</td><td>Survei pegawai; pemeriksaan kesehatan berkala</td></tr>
+          <tr><td>November–Desember</td><td>Penilaian kinerja tahunan; inventarisasi aset; penyusunan anggaran SDM; WLKP</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
     <!-- ============ BAB 16 ============ -->
-    <section class="bab" id="pendidikan" data-title="Khusus lembaga pendidikan" data-group="Bagian VI · Pendidikan">
-      <div class="bab-head"><span class="bab-no">Bab 23</span><h2>Ketentuan khusus lembaga pendidikan</h2></div>
+    <section class="bab" id="pendidikan" data-title="Khusus lembaga pendidikan" data-group="Bagian VII · Pendidikan">
+      <div class="bab-head"><span class="bab-no">Bab 29</span><h2>Ketentuan khusus lembaga pendidikan</h2></div>
       <p>Bab ini melengkapi bab-bab sebelumnya untuk sekolah, madrasah, dan perguruan tinggi swasta. Yayasan atau badan penyelenggara berkedudukan sebagai pemberi kerja, sehingga seluruh ketentuan ketenagakerjaan tetap berlaku bagi pendidik dan tenaga kependidikan non-ASN.</p>
-      <h3>23.1 Kualifikasi dan beban kerja</h3>
+      <h3>29.1 Kualifikasi dan beban kerja</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Aspek</th><th>Guru</th><th>Dosen</th></tr></thead>
         <tbody>
@@ -1460,7 +1939,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         </tbody>
       </table></div>
       <p>Dasar: UU 14/2005 Ps. 8–9, 35, 45–46, 60; Permendikbudristek 44/2024 tentang Profesi, Karier, dan Penghasilan Dosen.</p>
-      <h3>23.2 Hak pendidik</h3>
+      <h3>29.2 Hak pendidik</h3>
       <ul>
         <li>Penghasilan di atas kebutuhan hidup minimum dan jaminan kesejahteraan sosial. Bagi pendidik non-ASN, upah tidak boleh di bawah upah minimum setempat.</li>
         <li>Tunjangan profesi bagi pendidik bersertifikat yang memenuhi syarat beban kerja, dibayarkan pemerintah sesuai ketentuan.</li>
@@ -1468,14 +1947,14 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Kebebasan memberikan penilaian dan menentukan kelulusan sesuai kaidah pendidikan dan peraturan.</li>
         <li>Kesempatan meningkatkan kompetensi melalui pengembangan keprofesian berkelanjutan.</li>
       </ul>
-      <h3>23.3 Kewajiban pendidik</h3>
+      <h3>29.3 Kewajiban pendidik</h3>
       <ul>
         <li>Merencanakan, melaksanakan, dan menilai pembelajaran secara bermutu.</li>
         <li>Bertindak objektif dan tidak diskriminatif terhadap peserta didik.</li>
         <li>Menjunjung tinggi peraturan, kode etik, serta nilai agama dan etika.</li>
         <li>Memelihara dan memupuk persatuan dan kesatuan bangsa.</li>
       </ul>
-      <h3>23.4 Pengaturan khusus</h3>
+      <h3>29.4 Pengaturan khusus</h3>
       <ul>
         <li><b>Kalender akademik.</b> Libur semester bagi peserta didik bukan otomatis cuti pegawai. Lembaga menetapkan hari kerja pendidik pada masa libur (penyusunan perangkat, pelatihan, penerimaan siswa) dan sisa hari yang dapat diperhitungkan sebagai cuti tahunan dengan kesepakatan tertulis.</li>
         <li><b>Guru tidak tetap/honorer.</b> Perjanjian kerja tertulis untuk satu tahun ajaran adalah PKWT dan tunduk pada batas jangka waktu PKWT. Bila mengajar mata pelajaran inti secara terus-menerus bertahun-tahun, lembaga sebaiknya mempertimbangkan pengangkatan sebagai pegawai tetap.</li>
@@ -1483,7 +1962,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li><b>Tugas tambahan.</b> Wali kelas, pembina ekstrakurikuler, kepala laboratorium, dan kaprodi diberi tunjangan atau pengakuan jam yang tertulis.</li>
         <li><b>Kegiatan di luar jam kerja.</b> Kemah, studi lapangan, dan lomba di akhir pekan diperlakukan sebagai lembur atau diganti hari istirahat.</li>
       </ul>
-      <h3>23.5 Penilaian kinerja guru</h3>
+      <h3>29.5 Penilaian kinerja guru</h3>
       <p>Penilaian kinerja guru di yayasan disusun dari empat unsur dan dilakukan sekali setahun, dengan observasi kelas paling sedikit dua kali per semester:</p>
       <div class="tablewrap"><table>
         <thead><tr><th>Unsur</th><th>Contoh indikator</th><th class="num">Bobot</th></tr></thead>
@@ -1496,7 +1975,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p>Guru yang memiliki sertifikat pendidik juga mengisi laporan kinerja melalui platform kementerian sebagai syarat tunjangan profesi. Hasil penilaian yayasan dan laporan platform sebaiknya diselaraskan agar guru tidak melapor dua kali untuk hal yang sama.</p>
 
-      <h3>23.6 Beban kerja dan jabatan akademik dosen</h3>
+      <h3>29.6 Beban kerja dan jabatan akademik dosen</h3>
       <ul>
         <li>Beban tridharma dosen tetap paling sedikit 12 SKS per semester, terdiri atas pendidikan dan pengajaran, penelitian, serta pengabdian kepada masyarakat, ditambah penunjang.</li>
         <li>Sasaran kinerja disepakati antara dosen dan pimpinan perguruan tinggi pada awal periode, dan dilaporkan sebagai laporan kinerja dosen.</li>
@@ -1504,14 +1983,14 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Penghasilan dosen non-ASN berada di atas kebutuhan hidup minimum dan mengikuti peraturan ketenagakerjaan; perguruan tinggi yang melanggar dapat dikenai sanksi.</li>
       </ul>
 
-      <h3>23.7 Sertifikasi dan penyetaraan</h3>
+      <h3>29.7 Sertifikasi dan penyetaraan</h3>
       <ul>
         <li>Lembaga mendorong guru mengikuti Pendidikan Profesi Guru (PPG) dalam jabatan dan dosen mengikuti sertifikasi dosen.</li>
         <li>Penyetaraan jabatan dan pangkat (inpassing) bagi guru dan dosen bukan PNS dilakukan untuk keperluan tunjangan profesi sesuai ketentuan kementerian. Bagian SDM menyiapkan dokumen pendukung: SK pengangkatan, ijazah, dan bukti masa kerja.</li>
         <li>Masa kerja yang diakui untuk tunjangan profesi didasarkan pada SK yayasan yang berurutan. Karena itu, SK pengangkatan dan perpanjangan pendidik disimpan rapi sejak awal.</li>
       </ul>
 
-      <h3>23.8 Tugas belajar dan izin belajar</h3>
+      <h3>29.8 Tugas belajar dan izin belajar</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Aspek</th><th>Tugas belajar</th><th>Izin belajar</th></tr></thead>
         <tbody>
@@ -1524,7 +2003,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       </table></div>
       <p>Perjanjian ikatan dinas dibuat tertulis sebelum studi dimulai, memuat besaran biaya, masa ikatan, dan cara perhitungan ganti rugi. Ijazah hasil studi tetap milik pegawai dan tidak boleh ditahan.</p>
 
-      <h3>23.9 Kepala sekolah dan pimpinan program studi</h3>
+      <h3>29.9 Kepala sekolah dan pimpinan program studi</h3>
       <ul>
         <li>Permendikdasmen 7/2025 tentang Penugasan Guru sebagai Kepala Sekolah menetapkan masa tugas kepala sekolah negeri 4 tahun per periode, paling banyak 2 periode. Bagi guru non-ASN di sekolah swasta, masa tugas ditetapkan penyelenggara (yayasan).</li>
         <li>Persyaratan umum dalam peraturan tersebut: kualifikasi S1/D4, sertifikat pendidik, kinerja minimal "Baik" dua tahun terakhir, pengalaman manajerial paling sedikit 2 tahun, tidak sedang menjalani hukuman disiplin sedang atau berat, dan usia paling tinggi 56 tahun saat ditugaskan.</li>
@@ -1533,7 +2012,7 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
         <li>Kepala sekolah yang selesai masa tugas kembali menjadi guru tanpa penurunan upah pokok; tunjangan jabatan berhenti.</li>
       </ul>
 
-      <h3>23.10 Contoh pembagian hari kerja pendidik dalam satu tahun ajaran</h3>
+      <h3>29.10 Contoh pembagian hari kerja pendidik dalam satu tahun ajaran</h3>
       <div class="tablewrap"><table>
         <thead><tr><th>Periode</th><th>Kegiatan pendidik</th><th>Status</th></tr></thead>
         <tbody>
@@ -1548,6 +2027,82 @@ mark{background:var(--gold-soft);color:var(--ink);padding:0 2px;border-radius:3p
       <p class="hint">Penetapan libur semester sebagai cuti tahunan bersama harus tertulis dalam PP/PKB atau perjanjian kerja, dan pendidik tetap berhak paling sedikit 12 hari kerja cuti tahunan dalam setahun.</p>
 
       <div class="note warn"><span class="tag">Rancangan</span><p>RUU Sisdiknas masuk Prolegnas Prioritas 2026 dan draf hasil Komisi X DPR masuk tahap harmonisasi pada Juli 2026. Draf tersebut bermaksud menyatukan pengaturan pendidikan, guru, dan dosen. Selama belum disahkan dan diundangkan, UU 20/2003, UU 14/2005, dan UU 12/2012 tetap berlaku.</p></div>
+    </section>
+
+    <!-- ============ BARU: PERLINDUNGAN ANAK & INTEGRITAS ============ -->
+    <section class="bab" id="perlindungan-anak" data-title="Perlindungan anak & integritas akademik" data-group="Bagian VII · Pendidikan">
+      <div class="bab-head"><span class="bab-no">Bab 30</span><h2>Perlindungan anak dan integritas akademik</h2></div>
+      <p>Bab ini berlaku bagi seluruh pegawai satuan pendidikan, termasuk tenaga kependidikan, petugas kebersihan, keamanan, pengemudi, dan pekerja alih daya yang berinteraksi dengan peserta didik.</p>
+
+      <h3>30.1 Kode perilaku dengan peserta didik</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Dianjurkan</th><th>Dilarang</th></tr></thead>
+        <tbody>
+          <tr><td>Bertemu peserta didik di ruang terbuka atau ruangan dengan pintu terbuka/berjendela</td><td>Berduaan dengan peserta didik di ruang tertutup tanpa alasan pembelajaran yang jelas</td></tr>
+          <tr><td>Berkomunikasi melalui kanal resmi sekolah dan grup kelas yang melibatkan orang tua</td><td>Pesan pribadi bernuansa personal, meminta foto, atau berkomunikasi larut malam</td></tr>
+          <tr><td>Kontak fisik yang wajar dan sesuai usia (bersalaman, menolong saat jatuh)</td><td>Sentuhan yang tidak perlu, hukuman fisik, dan tindakan yang mempermalukan</td></tr>
+          <tr><td>Mengantar peserta didik dengan kendaraan sekolah atas izin dan sepengetahuan orang tua</td><td>Membawa peserta didik dengan kendaraan pribadi tanpa izin tertulis orang tua dan sekolah</td></tr>
+          <tr><td>Mengunggah foto kegiatan sekolah sesuai izin orang tua</td><td>Mengunggah foto atau data peserta didik di akun pribadi tanpa izin</td></tr>
+          <tr><td>Memberi hadiah prestasi secara terbuka melalui sekolah</td><td>Memberi hadiah pribadi atau perlakuan istimewa kepada peserta didik tertentu</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>30.2 Bila ada dugaan kekerasan terhadap anak oleh pegawai</h3>
+      <ol>
+        <li><b>Dengarkan dan amankan.</b> Bila anak bercerita, dengarkan dengan tenang, jangan mendesak dengan pertanyaan berulang, dan jangan berjanji merahasiakan. Pastikan anak aman saat itu juga.</li>
+        <li><b>Laporkan pada hari yang sama</b> kepada Tim Pencegahan dan Penanganan Kekerasan (TPPK) atau kepala sekolah. Bila kepala sekolah yang diduga terlibat, laporkan langsung kepada yayasan atau satuan tugas di dinas pendidikan.</li>
+        <li><b>Catat</b> apa yang dilihat atau didengar dengan kata-kata anak sendiri, tanggal, dan waktu. Jangan menyelidiki sendiri.</li>
+        <li><b>Pisahkan</b> terlapor dari peserta didik selama penanganan, misalnya dengan pembebasan sementara dari tugas mengajar dengan upah tetap dibayar.</li>
+        <li><b>Libatkan orang tua</b> dan rujuk korban untuk pendampingan psikologis, medis, atau hukum melalui UPTD PPA atau layanan SAPA 129.</li>
+        <li><b>Rujuk ke penegak hukum</b> bila ada dugaan tindak pidana, sesuai UU 35/2014 tentang Perlindungan Anak dan UU 12/2022.</li>
+        <li><b>Jaga kerahasiaan</b> identitas korban dan pelapor; dilarang menyebarkan informasi di grup pesan atau media sosial.</li>
+      </ol>
+      <p>Penanganan mengikuti Permendikbudristek 46/2023. Pegawai yang mengetahui dugaan kekerasan tetapi tidak melaporkannya dapat dikenai sanksi disiplin.</p>
+
+      <h3>30.3 Les privat dan bimbingan berbayar</h3>
+      <ul>
+        <li>Pendidik <b>tidak boleh</b> memberi les privat berbayar kepada peserta didik yang sedang ia ajar atau nilai pada mata pelajaran yang sama.</li>
+        <li>Les privat bagi peserta didik dari kelas atau sekolah lain diperbolehkan di luar jam kerja dan dilaporkan sebagai pekerjaan sampingan (Bab 17).</li>
+        <li>Kelas tambahan yang diselenggarakan sekolah dijalankan secara terbuka, dengan biaya (bila ada) ditetapkan sekolah, bukan ditarik langsung oleh guru.</li>
+        <li>Materi atau kisi-kisi ujian tidak boleh dibagikan secara khusus kepada peserta les.</li>
+      </ul>
+
+      <h3>30.4 Hadiah dari orang tua dan peserta didik</h3>
+      <ul>
+        <li>Pegawai menolak uang, voucer, barang bernilai, atau fasilitas dari orang tua dan peserta didik, terutama yang berkaitan dengan nilai, kenaikan kelas, kelulusan, atau penerimaan murid baru.</li>
+        <li>Ucapan terima kasih yang tidak bernilai ekonomis berarti (kartu, karya buatan sendiri, makanan untuk dinikmati bersama di sekolah) boleh diterima.</li>
+        <li>Pemberian yang tidak dapat ditolak dilaporkan kepada bagian SDM paling lambat 7 hari kerja untuk diputuskan penggunaannya.</li>
+        <li>Bagi pegawai ASN di satuan pendidikan negeri berlaku ketentuan gratifikasi dalam peraturan pemberantasan tindak pidana korupsi.</li>
+      </ul>
+
+      <h3>30.5 Integritas ujian dan pengelolaan nilai</h3>
+      <ul>
+        <li>Naskah soal disusun, digandakan, dan disimpan oleh tim yang ditunjuk, dengan berita acara. Pembocoran soal adalah pelanggaran berat.</li>
+        <li>Pengawas ujian tidak mengawasi kelas yang diikuti anggota keluarganya.</li>
+        <li>Nilai diberikan berdasarkan bukti asesmen dan kriteria yang diumumkan sejak awal. Perubahan nilai setelah rapor diterbitkan memerlukan alasan tertulis dan persetujuan kepala sekolah.</li>
+        <li>Remedial dan ujian susulan diberikan dengan kesempatan yang sama bagi semua peserta didik yang memenuhi syarat.</li>
+        <li>Data nilai disimpan dalam sistem dengan akses terbatas dan jejak perubahan.</li>
+      </ul>
+
+      <h3>30.6 Integritas akademik di perguruan tinggi</h3>
+      <p>Mengacu pada Permendikbudristek 39/2021 tentang Integritas Akademik dalam Menghasilkan Karya Ilmiah, dosen dan tenaga kependidikan tidak melakukan:</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Pelanggaran</th><th>Contoh</th></tr></thead>
+        <tbody>
+          <tr><td>Fabrikasi</td><td>Mengarang data atau hasil penelitian</td></tr>
+          <tr><td>Falsifikasi</td><td>Mengubah data, proses, atau gambar sehingga tidak sesuai kenyataan</td></tr>
+          <tr><td>Plagiat</td><td>Memakai karya atau gagasan orang lain tanpa menyebut sumber, termasuk karya sendiri yang sudah terbit (autoplagiat)</td></tr>
+          <tr><td>Kepengarangan tidak sah</td><td>Mencantumkan nama yang tidak berkontribusi, atau menghilangkan nama yang berkontribusi</td></tr>
+          <tr><td>Konflik kepentingan</td><td>Tidak mengungkapkan kepentingan pribadi atau pendanaan yang memengaruhi hasil</td></tr>
+          <tr><td>Pengajuan jamak</td><td>Mengirim naskah yang sama ke lebih dari satu jurnal atau forum secara bersamaan</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>Dugaan pelanggaran diperiksa oleh komisi etik atau senat sesuai statuta, dengan hak terlapor untuk menjelaskan.</li>
+        <li>Sanksi bertingkat dari teguran, penundaan kenaikan jabatan akademik, penarikan karya, sampai pemberhentian sesuai berat pelanggaran.</li>
+        <li>Penggunaan AI dalam penulisan ilmiah diungkapkan sesuai pedoman jurnal dan kebijakan perguruan tinggi (Bab 18).</li>
+        <li>Dosen yang membimbing tidak boleh meminta mahasiswa mencantumkan namanya pada karya yang tidak ia kontribusikan secara nyata.</li>
+      </ul>
     </section>
 
     <!-- ============ LAMPIRAN A: KALKULATOR ============ -->
@@ -1680,7 +2235,7 @@ Pasal 8 – Berakhirnya Perjanjian
 (3) Pihak yang mengakhiri perjanjian sebelum waktunya, kecuali karena alasan yang dibenarkan undang-undang, membayar ganti rugi sebesar upah sampai batas berakhirnya jangka waktu perjanjian.
 
 Pasal 9 – Kekayaan Intelektual
-[Atur hak atas ciptaan dan invensi yang dibuat dalam hubungan kerja, lihat Bab 15.]
+[Atur hak atas ciptaan dan invensi yang dibuat dalam hubungan kerja, lihat Bab 18.]
 
 Pasal 10 – Penyelesaian Perselisihan
 Perselisihan diselesaikan secara musyawarah (bipartit); bila tidak tercapai, sesuai UU 2/2004.
@@ -1724,7 +2279,7 @@ pada tanggal [tanggal]
 
 (______________________)</div></div></details>
 
-      <details class="tpl"><summary>3. Surat Peringatan (SP I/II/III) <small>Bab 19</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT PERINGATAN [PERTAMA / KEDUA / KETIGA]
+      <details class="tpl"><summary>3. Surat Peringatan (SP I/II/III) <small>Bab 23</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT PERINGATAN [PERTAMA / KEDUA / KETIGA]
 Nomor: [ ... ]
 
 Kepada Yth.
@@ -1756,7 +2311,7 @@ Atasan langsung                      Bagian SDM
 Diterima oleh pegawai pada tanggal: [ ... ]
 Tanda tangan: (______________________)</div></div></details>
 
-      <details class="tpl"><summary>4. Formulir Permohonan Cuti dan Izin <small>Bab 7</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">FORMULIR PERMOHONAN CUTI / IZIN
+      <details class="tpl"><summary>4. Formulir Permohonan Cuti dan Izin <small>Bab 8</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">FORMULIR PERMOHONAN CUTI / IZIN
 <span class="org">[Nama Lembaga]</span>
 
 Nama          : [ ... ]
@@ -1785,7 +2340,7 @@ Pemohon                 Atasan langsung            Bagian SDM
 (____________)          (____________)             (____________)
 Tanggal: [ ... ]</div></div></details>
 
-      <details class="tpl"><summary>5. Surat Pengunduran Diri <small>Bab 20</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">[Kota], [tanggal]
+      <details class="tpl"><summary>5. Surat Pengunduran Diri <small>Bab 24</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">[Kota], [tanggal]
 
 Kepada Yth.
 Pimpinan <span class="org">[Nama Lembaga]</span>
@@ -1812,7 +2367,7 @@ Hormat saya,
 
 (______________________)</div></div></details>
 
-      <details class="tpl"><summary>6. Risalah Perundingan Bipartit <small>Bab 21</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">RISALAH PERUNDINGAN BIPARTIT
+      <details class="tpl"><summary>6. Risalah Perundingan Bipartit <small>Bab 25</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">RISALAH PERUNDINGAN BIPARTIT
 Perundingan ke-[ ... ]
 
 Hari/tanggal : [ ... ]
@@ -1845,7 +2400,7 @@ Pihak lembaga                         Pihak pegawai/serikat
 
 (______________________)              (______________________)</div></div></details>
 
-      <details class="tpl"><summary>7. Surat Keterangan Kerja <small>Bab 20</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT KETERANGAN KERJA
+      <details class="tpl"><summary>7. Surat Keterangan Kerja <small>Bab 24</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT KETERANGAN KERJA
 Nomor: [ ... ]
 
 Yang bertanda tangan di bawah ini, [nama dan jabatan], menerangkan bahwa:
@@ -1939,7 +2494,7 @@ PENYELENGGARA                         PESERTA
 
 (______________________)              (______________________)</div></div></details>
 
-      <details class="tpl"><summary>11. Surat Tugas Perjalanan Dinas <small>Bab 8</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT TUGAS
+      <details class="tpl"><summary>11. Surat Tugas Perjalanan Dinas <small>Bab 9</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT TUGAS
 Nomor: [ ... ]
 
 Yang bertanda tangan di bawah ini, [nama dan jabatan] <span class="org">[Nama Lembaga]</span>, menugaskan:
@@ -1965,7 +2520,7 @@ Setelah melaksanakan tugas, yang bersangkutan wajib menyerahkan laporan dan bukt
 Pengesahan kedatangan di tempat tujuan:
 Tiba tanggal: [ ... ]   Nama & tanda tangan pejabat setempat: (__________)</div></div></details>
 
-      <details class="tpl"><summary>12. Surat Pemberitahuan PHK <small>Bab 20</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">[Kota], [tanggal]
+      <details class="tpl"><summary>12. Surat Pemberitahuan PHK <small>Bab 24</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">[Kota], [tanggal]
 
 Nomor   : [ ... ]
 Perihal : Pemberitahuan Pemutusan Hubungan Kerja
@@ -1996,6 +2551,222 @@ Hormat kami,
 (______________________)
 
 Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div></details>
+
+      <details class="tpl"><summary>13. Formulir Evaluasi Masa Percobaan <small>Bab 3</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">EVALUASI MASA PERCOBAAN
+<span class="org">[Nama Lembaga]</span>
+
+Nama pegawai     : [ ... ]
+Jabatan/Unit     : [ ... ]
+Masa percobaan   : [tanggal mulai] s.d. [tanggal berakhir] (paling lama 3 bulan)
+Penilai          : [nama atasan langsung]
+
+Penilaian (1 = kurang, 5 = sangat baik):
+1. Penguasaan tugas dan pengetahuan kerja      : [ ]
+2. Kualitas dan ketepatan hasil kerja          : [ ]
+3. Kehadiran dan ketepatan waktu               : [ ]
+4. Kerja sama dan komunikasi                   : [ ]
+5. Kepatuhan pada tata tertib dan kode etik    : [ ]
+6. [Untuk pendidik] Kemampuan mengajar dan mengelola kelas : [ ]
+
+Catatan kekuatan     : [ ... ]
+Catatan perbaikan    : [ ... ]
+
+Rekomendasi:
+[ ] Diangkat sebagai pegawai tetap mulai [tanggal]
+[ ] Tidak dilanjutkan (pemberitahuan paling lambat 7 hari kerja sebelum berakhir), alasan: [ ... ]
+
+Penilai                 Pegawai (telah membaca)        Bagian SDM
+
+
+(____________)          (____________)                 (____________)
+Tanggal: [ ... ]</div></div></details>
+
+      <details class="tpl"><summary>14. Formulir Penilaian Kinerja Tahunan <small>Bab 21</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">PENILAIAN KINERJA TAHUNAN
+Periode: [ ... ]
+
+Nama/Jabatan : [ ... ]
+Atasan/Penilai: [ ... ]
+
+A. SASARAN KERJA
+No | Sasaran (disepakati awal periode) | Bobot | Target | Realisasi | Nilai (1–5)
+1  | [ ... ]                            | [ %]  | [ ... ]| [ ... ]   | [ ]
+2  | [ ... ]                            | [ %]  | [ ... ]| [ ... ]   | [ ]
+3  | [ ... ]                            | [ %]  | [ ... ]| [ ... ]   | [ ]
+Nilai sasaran (rata-rata tertimbang): [ ]
+
+B. PERILAKU KERJA (1–5)
+Integritas [ ]   Kerja sama [ ]   Pelayanan [ ]   Inisiatif [ ]   Disiplin [ ]
+Nilai perilaku: [ ]
+
+C. NILAI AKHIR = (A × [70]%) + (B × [30]%) = [ ]
+Predikat: [Sangat baik / Baik / Cukup / Perlu perbaikan / Kurang]
+
+D. RENCANA PENGEMBANGAN
+Kompetensi yang dikembangkan: [ ... ]
+Pelatihan/penugasan: [ ... ]          Target waktu: [ ... ]
+
+E. TANGGAPAN PEGAWAI
+[ ... ]
+
+Penilai                 Pegawai                 Atasan penilai
+
+
+(____________)          (____________)          (____________)
+
+Pegawai yang tidak setuju dengan hasil penilaian dapat mengajukan keberatan tertulis kepada atasan penilai paling lambat 7 hari kerja.</div></div></details>
+
+      <details class="tpl"><summary>15. Perjanjian Ikatan Dinas <small>Bab 29</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">PERJANJIAN IKATAN DINAS
+Nomor: [ ... ]
+
+Antara <span class="org">[Nama Lembaga]</span> (PIHAK PERTAMA), diwakili [nama, jabatan],
+dan [nama pegawai], [jabatan] (PIHAK KEDUA).
+
+Pasal 1 – Program
+PIHAK PERTAMA membiayai PIHAK KEDUA mengikuti [program studi/pelatihan] di [institusi] selama [ ... ] bulan, mulai [tanggal].
+
+Pasal 2 – Biaya
+Biaya yang ditanggung PIHAK PERTAMA: [biaya pendidikan Rp ...; biaya hidup Rp ...; lainnya]. Jumlah perkiraan: Rp [ ... ].
+
+Pasal 3 – Status selama program
+PIHAK KEDUA [dibebaskan sebagian/seluruh tugas] dan tetap menerima upah [penuh/ ... %] serta kepesertaan BPJS.
+
+Pasal 4 – Masa ikatan
+Setelah program selesai, PIHAK KEDUA bekerja pada PIHAK PERTAMA paling sedikit [ ... ] tahun, terhitung sejak [tanggal kembali bekerja].
+
+Pasal 5 – Ganti rugi
+Bila PIHAK KEDUA mengundurkan diri sebelum masa ikatan berakhir, PIHAK KEDUA mengembalikan biaya secara proporsional:
+Ganti rugi = (sisa bulan masa ikatan ÷ total bulan masa ikatan) × biaya yang telah dikeluarkan.
+Ganti rugi tidak berlaku bila hubungan kerja berakhir karena PHK oleh PIHAK PERTAMA yang bukan karena kesalahan PIHAK KEDUA, sakit berkepanjangan, atau meninggal dunia.
+
+Pasal 6 – Ijazah dan sertifikat
+Ijazah dan sertifikat hasil program adalah milik PIHAK KEDUA dan tidak ditahan oleh PIHAK PERTAMA.
+
+Pasal 7 – Kegagalan studi
+Bila PIHAK KEDUA tidak menyelesaikan program karena kelalaiannya, ketentuan ganti rugi dibahas secara bipartit berdasarkan biaya yang telah dikeluarkan.
+
+[Kota], [tanggal]
+PIHAK PERTAMA                         PIHAK KEDUA
+
+
+(______________________)              (______________________)</div></div></details>
+
+      <details class="tpl"><summary>16. Perjanjian Kerahasiaan <small>Bab 17</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">PERJANJIAN KERAHASIAAN
+
+Saya yang bertanda tangan di bawah ini:
+Nama/Jabatan: [ ... ]
+
+menyatakan dan menyetujui terhadap <span class="org">[Nama Lembaga]</span> bahwa:
+
+1. Informasi rahasia meliputi data pegawai, peserta didik, dan pelanggan; data keuangan; soal ujian; strategi, harga, dan kontrak; kode program; serta informasi lain yang ditandai rahasia atau secara wajar patut dianggap rahasia.
+2. Saya hanya menggunakan informasi rahasia untuk melaksanakan tugas dan tidak mengungkapkannya kepada pihak lain tanpa izin tertulis.
+3. Saya tidak menyalin, mengirim ke akun pribadi, atau memasukkan informasi rahasia ke layanan pihak ketiga (termasuk layanan AI) yang tidak disetujui lembaga.
+4. Kewajiban ini tidak berlaku untuk informasi yang sudah menjadi milik umum bukan karena kesalahan saya, atau yang wajib diungkapkan berdasarkan perintah hukum.
+5. Pada saat hubungan kerja berakhir, saya mengembalikan atau menghapus seluruh informasi rahasia yang saya kuasai.
+6. Kewajiban kerahasiaan berlaku selama hubungan kerja dan [ ... ] tahun setelahnya; untuk data pribadi dan rahasia dagang berlaku tanpa batas waktu.
+7. [Opsional, jabatan kunci] Selama [ ... ] bulan setelah berhenti, saya tidak membujuk pegawai atau pelanggan lembaga untuk berpindah.
+8. Pelanggaran perjanjian ini dapat dikenai sanksi disiplin, tuntutan ganti rugi, dan/atau proses hukum sesuai peraturan perundang-undangan.
+
+[Kota], [tanggal]
+
+
+(______________________)</div></div></details>
+
+      <details class="tpl"><summary>17. Surat Perintah Kerja Lembur <small>Bab 6</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">SURAT PERINTAH KERJA LEMBUR
+Nomor: [ ... ]
+Unit: [ ... ]
+
+Tanggal lembur : [ ... ]   Jenis hari: [ ] hari kerja   [ ] hari istirahat/libur
+Alasan lembur  : [pekerjaan yang harus segera diselesaikan]
+
+No | Nama pegawai | Jam mulai | Jam selesai | Jumlah jam | Persetujuan pegawai (paraf)
+1  | [ ... ]      | [ ... ]   | [ ... ]     | [ ... ]    | [ ]
+2  | [ ... ]      | [ ... ]   | [ ... ]     | [ ... ]    | [ ]
+
+Ketentuan:
+- Lembur paling lama 4 jam per hari dan 18 jam per minggu (tidak termasuk hari istirahat/libur).
+- Lembur 4 jam atau lebih disertai makan dan minum minimal 1.400 kkal.
+- Upah lembur dihitung bagian SDM sesuai PP 35/2021.
+
+Yang memerintahkan             Disetujui                 Realisasi diverifikasi (SDM)
+
+
+(______________)               (______________)          (______________)</div></div></details>
+
+      <details class="tpl"><summary>18. Berita Acara Serah Terima Pekerjaan dan Aset <small>Bab 17</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">BERITA ACARA SERAH TERIMA
+Nomor: [ ... ]
+
+Pada hari ini [hari], tanggal [ ... ], telah dilakukan serah terima dari:
+Nama/Jabatan (yang menyerahkan): [ ... ]
+kepada:
+Nama/Jabatan (yang menerima)   : [ ... ]
+
+dalam rangka [pengunduran diri / mutasi / cuti panjang / berakhirnya kontrak / penugasan baru].
+
+A. PEKERJAAN
+No | Pekerjaan/berkas | Status | Catatan
+1  | [ ... ]          | [selesai/berjalan] | [ ... ]
+
+B. ASET DAN INVENTARIS
+No | Barang | Nomor inventaris | Kondisi | Kelengkapan
+1  | [laptop ...] | [ ... ] | [baik/rusak] | [charger, tas]
+2  | [kunci, kartu akses] | [ ... ] | [ ... ] | [ ... ]
+
+C. AKUN DAN AKSES
+Akun surel, sistem, dan media sosial lembaga: [diserahkan/dinonaktifkan pada tanggal ...]
+
+Barang dan pekerjaan di atas diserahkan dalam keadaan sebagaimana tercatat.
+
+Yang menyerahkan        Yang menerima         Mengetahui (atasan)
+
+
+(____________)          (____________)        (____________)</div></div></details>
+
+      <details class="tpl"><summary>19. Formulir Wawancara Keluar (Exit Interview) <small>Bab 22</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">WAWANCARA KELUAR
+(Jawaban dirahasiakan dan hanya dilaporkan dalam bentuk rangkuman tanpa identitas.)
+
+Nama/Jabatan     : [ ... ]          Masa kerja: [ ... ]
+Tanggal terakhir : [ ... ]          Pewawancara (SDM): [ ... ]
+
+1. Alasan utama Anda meninggalkan lembaga:
+   [ ] Kesempatan karier   [ ] Gaji dan tunjangan   [ ] Beban kerja   [ ] Hubungan dengan atasan
+   [ ] Lingkungan kerja    [ ] Keluarga/pindah domisili   [ ] Studi lanjut   [ ] Lainnya: [ ... ]
+2. Apa yang paling Anda hargai selama bekerja di sini?
+   [ ... ]
+3. Apa yang seharusnya diperbaiki lembaga?
+   [ ... ]
+4. Apakah tugas, target, dan penilaian kinerja Anda jelas dan adil? (1–5): [ ]
+5. Apakah Anda mendapat dukungan pengembangan yang cukup? (1–5): [ ]
+6. Pernahkah Anda mengalami atau melihat perlakuan tidak pantas yang belum dilaporkan?
+   [ ] Tidak   [ ] Ya, saya bersedia dihubungi satuan tugas secara rahasia
+7. Apakah Anda bersedia kembali bekerja di sini di masa depan? [ ] Ya  [ ] Mungkin  [ ] Tidak
+8. Saran lain:
+   [ ... ]
+
+Terima kasih atas kontribusi Anda.</div></div></details>
+
+      <details class="tpl"><summary>20. Formulir Klaim Penggantian Biaya <small>Bab 28</small></summary><div class="body"><button class="copy" type="button">Salin teks</button><div class="doc">FORMULIR KLAIM PENGGANTIAN BIAYA
+<span class="org">[Nama Lembaga]</span>
+
+Nama/Jabatan   : [ ... ]
+Unit           : [ ... ]
+Keperluan      : [ ... ]
+Disetujui sebelumnya oleh: [nama atasan], tanggal [ ... ]
+
+No | Tanggal | Uraian pengeluaran | Bukti (nomor/jenis) | Jumlah (Rp)
+1  | [ ... ] | [ ... ]            | [nota/struk/e-receipt] | [ ... ]
+2  | [ ... ] | [ ... ]            | [ ... ]             | [ ... ]
+                                            TOTAL         | [ ... ]
+
+Dikurangi uang muka (bila ada): Rp [ ... ]
+Jumlah yang diajukan/dikembalikan: Rp [ ... ]
+Dibayarkan ke rekening: [bank, nomor, atas nama]
+
+Saya menyatakan pengeluaran di atas benar untuk kepentingan dinas dan belum pernah diajukan sebelumnya.
+
+Pemohon            Atasan (memeriksa)        Keuangan (verifikasi)      Pembayaran
+
+
+(__________)       (__________)              (__________)               Tanggal: [ ... ]</div></div></details>
     </section>
 
     <!-- ============ LAMPIRAN: STRUKTUR ORGANISASI ============ -->
@@ -2116,6 +2887,11 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
         <li><input type="checkbox" id="ck15"><label for="ck15">Tambahkan klausul kekayaan intelektual dan penggunaan AI ke perjanjian kerja baru.</label></li>
         <li><input type="checkbox" id="ck16"><label for="ck16">Tetapkan saluran whistleblowing, tim pengelola, dan rantai komunikasi darurat.</label></li>
         <li><input type="checkbox" id="ck17"><label for="ck17">Kumpulkan pernyataan penerimaan buku panduan dari seluruh pegawai.</label></li>
+        <li><input type="checkbox" id="ck18"><label for="ck18">Tetapkan jam kerja, toleransi keterlambatan, dan sistem presensi; jelaskan pemrosesan data biometrik kepada pegawai.</label></li>
+        <li><input type="checkbox" id="ck19"><label for="ck19">Pasang tanda Kawasan Tanpa Rokok dan jadwalkan pemeriksaan kesehatan berkala.</label></li>
+        <li><input type="checkbox" id="ck20"><label for="ck20">Lengkapi matriks kewenangan atasan dan latih atasan tentang umpan balik serta wawancara disiplin.</label></li>
+        <li><input type="checkbox" id="ck21"><label for="ck21">Tetapkan jadwal retensi arsip dan rapikan berkas personalia seluruh pegawai.</label></li>
+        <li><input type="checkbox" id="ck22"><label for="ck22">Sosialisasikan kode perilaku dengan peserta didik kepada seluruh pegawai sekolah, termasuk pekerja alih daya.</label></li>
         <li><input type="checkbox" id="ck12"><label for="ck12">Sosialisasikan perubahan kepada atasan dan pegawai, lalu perbarui buku panduan ini.</label></li>
       </ul>
     </section>
@@ -2155,7 +2931,11 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
       <details class="faq"><summary>Modul ajar yang dibuat guru milik siapa?</summary><p>Menurut UU Hak Cipta, kecuali diperjanjikan lain, hak cipta atas ciptaan dalam hubungan kerja ada pada pihak yang membuatnya, yaitu guru. Karena itu, lembaga yang ingin memakai atau menerbitkan modul perlu mengaturnya dalam perjanjian kerja, misalnya dengan lisensi penggunaan bagi lembaga.</p></details>
       <details class="faq"><summary>Berapa usia pensiun yang harus kami tetapkan?</summary><p>Tidak ada satu angka wajib. Lembaga menetapkannya dalam PK/PP/PKB. Sebagai acuan, usia pensiun Jaminan Pensiun BPJS adalah 59 tahun pada 2025–2027 dan 60 tahun mulai 2028.</p></details>
       <details class="faq"><summary>Bolehkah guru dimutasi ke sekolah lain dalam satu yayasan?</summary><p>Boleh bila diatur dalam perjanjian kerja atau PP/PKB, dilakukan untuk kebutuhan organisasi, tidak menurunkan upah, diberitahukan tertulis lebih dulu, dan biaya pindah ditanggung yayasan. Mutasi tidak boleh dipakai sebagai hukuman terselubung.</p></details>
-      <details class="faq"><summary>Bagaimana menghitung pesangon pegawai yang di-PHK karena efisiensi?</summary><p>Lihat Bab 20.4 untuk pengalinya, lalu gunakan kalkulator di Lampiran A. Pilih mode simulasi UU baru untuk melihat perkiraan setelah pengali 0,5 dihapus.</p></details>
+      <details class="faq"><summary>Sakit satu hari apakah perlu surat dokter?</summary><p>Tidak, cukup memberi tahu atasan sebelum jam kerja dimulai. Surat dokter diperlukan untuk sakit 2 hari atau lebih (Bab 7.5).</p></details>
+      <details class="faq"><summary>Bolehkah guru memberi les privat kepada muridnya sendiri?</summary><p>Tidak untuk mata pelajaran yang ia ajar atau nilai, karena menimbulkan benturan kepentingan. Les untuk peserta didik dari kelas atau sekolah lain boleh di luar jam kerja dan dilaporkan sebagai pekerjaan sampingan (Bab 30.3).</p></details>
+      <details class="faq"><summary>Apakah klausul larangan bekerja di perusahaan pesaing sah?</summary><p>Bisa, tetapi harus sempit dan wajar karena setiap orang berhak memilih pekerjaan. Batasi pada jabatan kunci, jangka waktu pendek, bidang dan wilayah yang jelas, dan sebaiknya disertai kompensasi (Bab 17.2).</p></details>
+      <details class="faq"><summary>Apakah lembaga boleh mewajibkan tes HIV?</summary><p>Tidak. Tes HIV tidak boleh menjadi syarat penerimaan atau kelanjutan hubungan kerja, dan status kesehatan pegawai wajib dirahasiakan (Bab 15.4).</p></details>
+      <details class="faq"><summary>Bagaimana menghitung pesangon pegawai yang di-PHK karena efisiensi?</summary><p>Lihat Bab 24.4 untuk pengalinya, lalu gunakan kalkulator di Lampiran A. Pilih mode simulasi UU baru untuk melihat perkiraan setelah pengali 0,5 dihapus.</p></details>
     </section>
 
     <!-- ============ LAMPIRAN E: GLOSARIUM ============ -->
@@ -2184,6 +2964,13 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
         <dt>Lock-out</dt><dd>Penolakan lembaga terhadap pekerja untuk bekerja sebagai akibat gagalnya perundingan.</dd>
         <dt>Inpassing</dt><dd>Penyetaraan jabatan dan pangkat guru atau dosen bukan PNS untuk keperluan tunjangan profesi.</dd>
         <dt>Uang saku</dt><dd>Pembayaran kepada peserta pemagangan untuk transportasi, makan, dan insentif; bukan upah.</dd>
+        <dt>Non-compete</dt><dd>Klausul larangan bekerja pada pesaing setelah hubungan kerja berakhir; harus sempit dan wajar.</dd>
+        <dt>Return to work</dt><dd>Program kembali bekerja bagi peserta JKK setelah kecelakaan kerja.</dd>
+        <dt>KTR</dt><dd>Kawasan Tanpa Rokok, termasuk tempat kerja dan tempat proses belajar mengajar.</dd>
+        <dt>Retensi arsip</dt><dd>Jangka waktu dokumen wajib disimpan sebelum dimusnahkan.</dd>
+        <dt>Reimbursement</dt><dd>Penggantian biaya yang dikeluarkan pegawai untuk kepentingan dinas.</dd>
+        <dt>Child safeguarding</dt><dd>Kebijakan dan prosedur untuk melindungi anak dari kekerasan oleh orang dewasa di lingkungan satuan pendidikan.</dd>
+        <dt>Fabrikasi / falsifikasi</dt><dd>Mengarang data penelitian / mengubah data sehingga tidak sesuai kenyataan.</dd>
         <dt>Whistleblowing</dt><dd>Pelaporan dugaan pelanggaran oleh orang dalam melalui saluran yang melindungi pelapor.</dd>
       </dl>
     </section>
@@ -2209,6 +2996,12 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
         <li><a href="https://www.hukumonline.com/klinik/a/jangka-waktu-dan-hak-hak-peserta-pemagangan-lt50c9bc71e2237/" target="_blank" rel="noopener">Hukumonline: hak peserta pemagangan</a></li>
         <li><a href="https://www.detik.com/jatim/berita/d-7724973/batas-usia-pensiun-pekerja-terbaru" target="_blank" rel="noopener">detik: usia pensiun Jaminan Pensiun</a></li>
         <li><a href="https://fahum.umsu.ac.id/info/?p=84794" target="_blank" rel="noopener">Daftar UMP 2026 per provinsi</a></li>
+        <li>PP 28/2024 tentang Pelaksanaan UU Kesehatan (Kawasan Tanpa Rokok)</li>
+        <li>Kepmenaker 68/2004 tentang Pencegahan dan Penanggulangan HIV/AIDS di Tempat Kerja</li>
+        <li>Kepmenakertrans 11/2005 tentang P4GN di Tempat Kerja</li>
+        <li>Permenakertrans Per.02/MEN/1980 tentang Pemeriksaan Kesehatan Tenaga Kerja</li>
+        <li>UU 30/2000 tentang Rahasia Dagang; UU 35/2014 tentang Perlindungan Anak</li>
+        <li>Permendikbudristek 39/2021 tentang Integritas Akademik</li>
         <li><a href="https://infopendidikan.bic.id/ruu-sisdiknas-2026-tunjangan-guru-wajib-belajar/" target="_blank" rel="noopener">Status RUU Sisdiknas 2026</a></li>
       </ul>
     </section>
@@ -2222,24 +3015,85 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
 
 <div class="backdrop" id="backdrop"></div>
 
-<div class="search" id="searchPanel" role="dialog" aria-modal="true" aria-label="Cari isi buku">
-  <div class="search-top">
-    <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
-    <input id="q" type="search" placeholder="Cari kata, pasal, atau topik… mis. lembur, THR, PKWT" autocomplete="off" aria-label="Kata kunci">
-    <button class="tb-btn icon-only" id="searchClose" type="button" aria-label="Tutup pencarian"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+<!-- Sheet: Daftar isi -->
+<div class="sheet" id="sheetToc" role="dialog" aria-modal="true" aria-labelledby="sheetTocTitle">
+  <div class="sheet-grip" aria-hidden="true"></div>
+  <div class="sheet-head"><div><h2 id="sheetTocTitle">Daftar isi</h2><p id="sheetTocSub">Pilih bab atau subbab</p></div><button class="icon-btn" type="button" data-close aria-label="Tutup daftar isi"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+  <div class="sheet-body" id="tocSheetBody">
+    <div class="toc-tools">
+      <div class="mini-prog"><span>Progres</span><div class="track"><div class="fill" id="sheetProgFill"></div></div><b id="sheetProgPct">0%</b></div>
+      <div class="search-wrap"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="search" id="tocSearchM" placeholder="Saring bab atau subbab…" aria-label="Saring bab atau subbab"></div>
+    </div>
+    <ul id="tocSheetList"></ul>
   </div>
-  <div class="search-meta" id="searchMeta">Ketik paling sedikit 2 huruf. Tekan Esc untuk menutup.</div>
+</div>
+
+<!-- Sheet: Cari -->
+<div class="sheet sheet-search" id="searchPanel" role="dialog" aria-modal="true" aria-labelledby="sheetSearchTitle">
+  <div class="sheet-grip" aria-hidden="true"></div>
+  <div class="sheet-head"><div><h2 id="sheetSearchTitle">Cari isi buku</h2></div><button class="icon-btn" type="button" id="searchClose" data-close aria-label="Tutup pencarian"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+  <div class="search-top">
+    <div class="field-q"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Kata, pasal, atau topik" autocomplete="off" enterkeyhint="search" aria-label="Kata kunci"></div>
+  </div>
+  <div class="search-meta" id="searchMeta">Ketik paling sedikit 2 huruf.</div>
   <ul id="results"></ul>
 </div>
 
-<nav class="bottombar" aria-label="Navigasi baca">
-  <button type="button" id="bbToc"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Daftar isi</button>
-  <button type="button" id="bbSearch"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Cari</button>
-  <button type="button" id="bbPrev"><svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Sebelumnya</button>
-  <button type="button" id="bbNext"><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>Berikutnya</button>
+<!-- Sheet: Pengaturan -->
+<div class="sheet" id="sheetSettings" role="dialog" aria-modal="true" aria-labelledby="sheetSetTitle">
+  <div class="sheet-grip" aria-hidden="true"></div>
+  <div class="sheet-head"><div><h2 id="sheetSetTitle">Pengaturan membaca</h2><p>Tersimpan di perangkat ini</p></div><button class="icon-btn" type="button" data-close aria-label="Tutup pengaturan"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+  <div class="sheet-body">
+    <div class="set-group">
+      <h3>Ukuran teks</h3>
+      <div class="segm" role="group" aria-label="Ukuran teks" id="setSize">
+        <button type="button" data-v="s" aria-pressed="false"><span class="aa-s">Aa</span> Kecil</button>
+        <button type="button" data-v="m" aria-pressed="true"><span class="aa-m">Aa</span> Sedang</button>
+        <button type="button" data-v="l" aria-pressed="false"><span class="aa-l">Aa</span> Besar</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <h3>Tema</h3>
+      <div class="segm" role="group" aria-label="Tema" id="setTheme">
+        <button type="button" data-v="system" aria-pressed="true"><svg class="icon" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Sistem</button>
+        <button type="button" data-v="light" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>Terang</button>
+        <button type="button" data-v="dark" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>Gelap</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <h3>Jarak baris</h3>
+      <div class="segm" role="group" aria-label="Jarak baris" id="setLh">
+        <button type="button" data-v="tight" aria-pressed="false">Rapat</button>
+        <button type="button" data-v="normal" aria-pressed="true">Normal</button>
+        <button type="button" data-v="loose" aria-pressed="false">Lega</button>
+      </div>
+      <div class="preview">Pratinjau: setiap pegawai berhak atas cuti tahunan paling sedikit 12 hari kerja.</div>
+    </div>
+    <div class="set-group">
+      <h3>Fitur membaca</h3>
+      <div class="switch-row"><span>Sembunyikan menu saat menggulir<small>Menu muncul lagi saat menggulir ke atas</small></span><button type="button" class="switch" role="switch" id="setAutoHide" aria-checked="true" aria-label="Sembunyikan menu saat menggulir"></button></div>
+      <div class="switch-row"><span>Bilah progres di atas layar</span><button type="button" class="switch" role="switch" id="setProgress" aria-checked="true" aria-label="Bilah progres di atas layar"></button></div>
+      <div class="switch-row"><span>Ingat posisi membaca<small>Tawarkan lanjut dari bab terakhir</small></span><button type="button" class="switch" role="switch" id="setResume" aria-checked="true" aria-label="Ingat posisi membaca"></button></div>
+    </div>
+    <div class="set-group">
+      <h3>Atur ulang</h3>
+      <div class="set-actions"><button type="button" id="setReset">Kembalikan pengaturan awal</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Dock bawah (ponsel & tablet) -->
+<nav class="dock" id="dock" aria-label="Menu buku">
+  <button type="button" id="dkHome" aria-current="true"><span class="pill"><svg class="icon" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Beranda</button>
+  <button type="button" id="dkToc" aria-controls="sheetToc"><span class="pill"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>Daftar Isi</button>
+  <button type="button" id="dkSearch" aria-controls="searchPanel"><span class="pill"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>Cari</button>
+  <button type="button" id="dkSet" aria-controls="sheetSettings"><span class="pill"><svg class="icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>Pengaturan</button>
 </nav>
 
+<div class="toast" id="toast" role="status"><span id="toastText"></span><button type="button" class="go" id="toastGo">Lanjutkan</button><button type="button" class="x" id="toastX" aria-label="Tutup"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+
 <button class="totop" id="toTop" type="button" aria-label="Kembali ke atas"><svg class="icon" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+
 
 <script>
 (function(){
@@ -2250,6 +3104,8 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
   orgInput.addEventListener('input',()=>{setOrg(orgInput.value); try{localStorage.setItem('bpk-org',orgInput.value)}catch(e){}});
 
   // ---------- Struktur bab & pembuka ----------
+  const root=document.documentElement, body=document.body;
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
   const sections=[...document.querySelectorAll('section.bab')];
   const meta=sections.map(s=>{
     const head=s.querySelector('.bab-head');
@@ -2258,21 +3114,30 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
     const n=raw.replace(/^(Bab|Lamp\.|Hal\.)\s*/,'');
     head.dataset.num=/^\d+$/.test(n)?n.padStart(2,'0'):n;
     const g=document.createElement('span'); g.className='bab-group'; g.textContent=s.dataset.group; noEl.after(g);
-    return {el:s,id:s.id,raw:raw,num:n,title:s.dataset.title,group:s.dataset.group};
+    return {el:s,id:s.id,raw:raw,num:n,title:s.dataset.title,group:s.dataset.group,subs:[]};
   });
-  document.querySelectorAll('section.bab h3').forEach(h=>{
-    const t=h.firstChild;
-    if(!t||t.nodeType!==3) return;
-    const m=t.textContent.match(/^\s*((?:\d+|[A-J])\.\d+)\s+/);
-    if(!m) return;
-    t.textContent=t.textContent.slice(m[0].length);
-    const sp=document.createElement('span'); sp.className='h3-num'; sp.textContent=m[1];
-    h.insertBefore(document.createTextNode(' '),t); h.insertBefore(sp,h.firstChild);
+  meta.forEach(m=>{
+    m.el.querySelectorAll('h3').forEach((h,k)=>{
+      if(h.closest('.calc')) return;
+      const t=h.firstChild;
+      let num='';
+      if(t&&t.nodeType===3){
+        const mm=t.textContent.match(/^\s*((?:\d+|[A-J])\.\d+)\s+/);
+        if(mm){
+          num=mm[1]; t.textContent=t.textContent.slice(mm[0].length);
+          const sp=document.createElement('span'); sp.className='h3-num'; sp.textContent=num;
+          h.insertBefore(document.createTextNode(' '),t); h.insertBefore(sp,h.firstChild);
+        }
+      }
+      if(!h.id) h.id=m.id+'-'+(k+1);
+      const label=[...h.childNodes].filter(x=>!(x.nodeType===1&&x.classList.contains('h3-num'))).map(x=>x.textContent).join('').replace(/\s+/g,' ').trim();
+      m.subs.push({id:h.id,num:num,title:label,el:h});
+    });
   });
   const babCount=meta.filter(m=>/^Bab/.test(m.raw)).length, lampCount=meta.filter(m=>/^Lamp/.test(m.raw)).length;
   const ec=document.getElementById('emblemCount'); if(ec) ec.textContent=babCount+' bab · '+lampCount+' lampiran';
 
-  // ---------- Daftar isi ----------
+  // ---------- Daftar isi desktop (sidebar) ----------
   const list=document.getElementById('tocList');
   let lastGroup='';
   meta.forEach(m=>{
@@ -2291,20 +3156,158 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
   });
   const links=[...list.querySelectorAll('a')];
 
-  // ---------- Laci (ponsel/tablet) ----------
-  const body=document.body, menuBtn=document.getElementById('menuBtn');
-  const mqDesk=window.matchMedia('(min-width:1100px)');
-  function openNav(){closeSearch();body.classList.add('nav-open');menuBtn.setAttribute('aria-expanded','true');setTimeout(()=>{const a=list.querySelector('a.active');if(a)a.scrollIntoView({block:'center'})},60)}
-  function closeNav(){body.classList.remove('nav-open');menuBtn.setAttribute('aria-expanded','false')}
-  menuBtn.addEventListener('click',()=>body.classList.contains('nav-open')?closeNav():openNav());
-  document.getElementById('sideClose').addEventListener('click',closeNav);
-  document.getElementById('bbToc').addEventListener('click',openNav);
-  document.getElementById('backdrop').addEventListener('click',()=>{closeNav();closeSearch()});
-  links.forEach(a=>a.addEventListener('click',()=>{if(!mqDesk.matches) closeNav()}));
-  document.getElementById('coverToc').addEventListener('click',()=>{
-    if(mqDesk.matches){document.getElementById('pengesahan').scrollIntoView();setTimeout(()=>tocSearch.focus({preventScroll:true}),400)}
-    else openNav();
+  // ---------- Daftar isi ponsel (sheet, dengan subbab) ----------
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const chev='<svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
+  const sheetList=document.getElementById('tocSheetList');
+  let g2='', html='';
+  meta.forEach((m,i)=>{
+    if(m.group!==g2){html+='<li class="g">'+esc(m.group)+'</li>';g2=m.group}
+    const hasSubs=m.subs.length>0;
+    html+='<li class="ch" data-i="'+i+'"><div class="row"><a href="#'+m.id+'" data-target="'+m.id+'"><span>'+esc(m.num)+'</span><span>'+esc(m.title)+'</span></a>'+
+      (hasSubs?'<button type="button" class="exp" aria-expanded="false" aria-label="Tampilkan subbab '+esc(m.title)+'">'+chev+'</button>':'')+'</div>'+
+      (hasSubs?'<ul class="subs" hidden>'+m.subs.map(s=>'<li><a href="#'+s.id+'" data-target="'+s.id+'"><span>'+esc(s.num)+'</span>'+esc(s.title)+'</a></li>').join('')+'</ul>':'')+'</li>';
   });
+  sheetList.innerHTML=html;
+  sheetList.addEventListener('click',e=>{
+    const ex=e.target.closest('.exp');
+    if(ex){const ul=ex.closest('.ch').querySelector('.subs'); const open=ex.getAttribute('aria-expanded')!=='true'; ex.setAttribute('aria-expanded',open); ul.hidden=!open; return}
+    const a=e.target.closest('a[data-target]');
+    if(a){e.preventDefault(); navigateTo(a.dataset.target)}
+  });
+  const tocSearchM=document.getElementById('tocSearchM');
+  tocSearchM.addEventListener('input',()=>{
+    const q=tocSearchM.value.trim().toLowerCase();
+    sheetList.querySelectorAll('.g').forEach(g=>g.hidden=!!q);
+    sheetList.querySelectorAll('.ch').forEach(ch=>{
+      if(!q){ch.hidden=false; const ul=ch.querySelector('.subs'); if(ul){ul.hidden=ch.querySelector('.exp').getAttribute('aria-expanded')!=='true'; ul.querySelectorAll('li').forEach(li=>li.hidden=false)} return}
+      const own=ch.querySelector('.row').textContent.toLowerCase().includes(q);
+      let any=false;
+      ch.querySelectorAll('.subs li').forEach(li=>{const hit=li.textContent.toLowerCase().includes(q); li.hidden=!(hit||own); if(hit) any=true});
+      ch.hidden=!(own||any);
+      const ul=ch.querySelector('.subs'); if(ul) ul.hidden=!any;
+    });
+  });
+
+  // ---------- Kunci gulir (posisi baca tetap) ----------
+  let lockY=0, locked=false;
+  function lockScroll(){ if(locked) return; locked=true; lockY=window.scrollY; body.style.position='fixed'; body.style.top=(-lockY)+'px'; body.style.left='0'; body.style.right='0'; body.style.width='100%'}
+  function unlockScroll(){ if(!locked) return; locked=false; body.style.position=''; body.style.top=''; body.style.left=''; body.style.right=''; body.style.width=''; window.scrollTo({top:lockY,behavior:'instant'})}
+
+  // ---------- Sheet ----------
+  const backdrop=document.getElementById('backdrop');
+  const dock=document.getElementById('dock');
+  const dockBtn={sheetToc:document.getElementById('dkToc'),searchPanel:document.getElementById('dkSearch'),sheetSettings:document.getElementById('dkSet')};
+  let openId=null, lastFocus=null;
+  function openSheet(id){
+    if(openId===id) return;
+    if(openId) closeSheet(false);
+    const el=document.getElementById(id);
+    lastFocus=document.activeElement;
+    lockScroll(); body.classList.add('sheet-open'); el.classList.add('open'); openId=id;
+    dock.classList.remove('hide');
+    Object.entries(dockBtn).forEach(([k,b])=>b.classList.toggle('active',k===id));
+    if(id==='sheetToc') prepTocSheet();
+    setTimeout(()=>{const f=id==='searchPanel'?document.getElementById('q'):el.querySelector('[data-close]'); if(f) f.focus({preventScroll:true}); if(id==='searchPanel') document.getElementById('q').select()},60);
+  }
+  function closeSheet(restore=true){
+    if(!openId) return;
+    const el=document.getElementById(openId);
+    el.classList.remove('open'); el.style.transform='';
+    openId=null; body.classList.remove('sheet-open');
+    Object.values(dockBtn).forEach(b=>b.classList.remove('active'));
+    if(restore){unlockScroll(); if(lastFocus&&lastFocus.focus) lastFocus.focus({preventScroll:true})}
+  }
+  function navigateTo(id){
+    const t=document.getElementById(id); if(!t) return;
+    closeSheet(true);
+    requestAnimationFrame(()=>{t.scrollIntoView({behavior:'instant',block:'start'}); onScroll()});
+  }
+  document.querySelectorAll('.sheet [data-close]').forEach(b=>b.addEventListener('click',()=>closeSheet()));
+  backdrop.addEventListener('click',()=>closeSheet());
+  // tarik ke bawah untuk menutup
+  document.querySelectorAll('.sheet').forEach(sh=>{
+    let y0=null, dy=0;
+    const start=e=>{ if(window.matchMedia('(min-width:1100px)').matches) return; y0=e.touches?e.touches[0].clientY:e.clientY; dy=0; sh.classList.add('dragging')};
+    const move=e=>{ if(y0===null) return; const y=e.touches?e.touches[0].clientY:e.clientY; dy=Math.max(0,y-y0); sh.style.transform='translateY('+dy+'px)'};
+    const end=()=>{ if(y0===null) return; sh.classList.remove('dragging'); y0=null; if(dy>90) closeSheet(); else sh.style.transform=''};
+    sh.querySelectorAll('.sheet-grip,.sheet-head').forEach(h=>{
+      h.addEventListener('touchstart',start,{passive:true}); h.addEventListener('touchmove',move,{passive:true}); h.addEventListener('touchend',end);
+      h.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&!e.target.closest('button')){start(e);const mv=ev=>move(ev);const up=()=>{end();window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up)};window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up)}});
+    });
+  });
+
+  // ---------- Bab aktif, progres, dock ----------
+  let cur=-1;
+  const nowNum=document.getElementById('nowNum'), nowTitle=document.getElementById('nowTitle');
+  const bar=document.getElementById('progressBar'), pct=document.getElementById('progPct'), fill=document.getElementById('progFill'), toTop=document.getElementById('toTop');
+  const sPct=document.getElementById('sheetProgPct'), sFill=document.getElementById('sheetProgFill');
+  const dkHome=document.getElementById('dkHome');
+  const cover=document.getElementById('top');
+  function setCurrent(i){
+    if(i===cur) return; cur=i;
+    links.forEach((a,k)=>a.classList.toggle('active',k===i));
+    if(i<0){nowNum.textContent='Sampul';nowTitle.textContent='Panduan Pegawai'}
+    else{nowNum.textContent=meta[i].raw;nowTitle.textContent=meta[i].title}
+    if(window.matchMedia('(min-width:1100px)').matches && links[i]){
+      const box=document.getElementById('sidebarInner'), a=links[i];
+      const top=a.offsetTop-box.offsetTop;
+      if(top<box.scrollTop+40||top>box.scrollTop+box.clientHeight-80) box.scrollTo({top:top-box.clientHeight/3});
+    }
+    if(i>=0 && autoResume) store.set('bpk-last',meta[i].id);
+  }
+  function prepTocSheet(){
+    sheetList.querySelectorAll('.ch').forEach(ch=>ch.classList.toggle('current',+ch.dataset.i===cur));
+    document.getElementById('sheetTocSub').textContent=cur>=0?('Sedang dibaca: '+meta[cur].raw+' · '+meta[cur].title):'Pilih bab atau subbab';
+    const c=sheetList.querySelector('.ch.current');
+    if(c){
+      const ex=c.querySelector('.exp'); if(ex&&!tocSearchM.value){ex.setAttribute('aria-expanded','true');c.querySelector('.subs').hidden=false}
+      const bodyEl=document.getElementById('tocSheetBody');
+      setTimeout(()=>{const tools=bodyEl.querySelector('.toc-tools'); bodyEl.scrollTop+=c.getBoundingClientRect().top-(tools.getBoundingClientRect().bottom+6)},60);
+    }
+  }
+  let lastY=window.scrollY, ticking=false, autoHide=true, autoResume=true;
+  function onScroll(){
+    ticking=false;
+    if(locked) return;
+    const y=window.scrollY, max=document.documentElement.scrollHeight-window.innerHeight;
+    const p=max>0?Math.min(1,Math.max(0,y/max)):0;
+    const w=(p*100)+'%', t=Math.round(p*100)+'%';
+    bar.style.width=w; fill.style.width=w; sFill.style.width=w; pct.textContent=t; sPct.textContent=t;
+    toTop.classList.toggle('show',y>900);
+    const coverBottom=cover.getBoundingClientRect().bottom;
+    root.classList.toggle('at-cover',coverBottom>0);
+    dkHome.setAttribute('aria-current',coverBottom>window.innerHeight*0.35?'true':'false');
+    const line=window.innerHeight*0.3;
+    let idx=-1;
+    for(let k=0;k<meta.length;k++){ if(meta[k].el.getBoundingClientRect().top<=line) idx=k; else break }
+    setCurrent(idx);
+    // sembunyikan dock saat menggulir ke bawah
+    const dy=y-lastY;
+    if(!autoHide || y<200 || y>=max-40 || dy<-6 || Math.abs(dy)>window.innerHeight) dock.classList.remove('hide');
+    else if(dy>8) dock.classList.add('hide');
+    lastY=y;
+  }
+  window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
+  window.addEventListener('resize',onScroll);
+  toTop.addEventListener('click',()=>window.scrollTo({top:0}));
+  document.querySelector('.reader').addEventListener('click',e=>{
+    if(e.target.closest('a,button,input,select,textarea,label,summary,.calc,.tpl,details,.tablewrap')) return;
+    if(window.getSelection && String(window.getSelection())) return;
+    dock.classList.toggle('hide');
+  });
+
+  // ---------- Dock ----------
+  dkHome.addEventListener('click',()=>{closeSheet(); window.scrollTo({top:0,behavior:'instant'}); onScroll()});
+  dockBtn.sheetToc.addEventListener('click',()=>openId==='sheetToc'?closeSheet():openSheet('sheetToc'));
+  dockBtn.searchPanel.addEventListener('click',()=>openId==='searchPanel'?closeSheet():openSheet('searchPanel'));
+  dockBtn.sheetSettings.addEventListener('click',()=>openId==='sheetSettings'?closeSheet():openSheet('sheetSettings'));
+  document.getElementById('coverToc').addEventListener('click',()=>{
+    if(window.matchMedia('(min-width:1100px)').matches){document.getElementById('pengesahan').scrollIntoView();setTimeout(()=>tocSearch.focus({preventScroll:true}),400)}
+    else openSheet('sheetToc');
+  });
+  document.getElementById('searchBtn').addEventListener('click',()=>openSheet('searchPanel'));
+  document.getElementById('settingsBtn').addEventListener('click',()=>openSheet('sheetSettings'));
 
   // ---------- Navigasi antarbab ----------
   meta.forEach((m,i)=>{
@@ -2316,54 +3319,30 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
     nav.innerHTML=h; m.el.appendChild(nav);
   });
 
-  // ---------- Bab aktif, progres membaca ----------
-  let cur=-1;
-  const nowNum=document.getElementById('nowNum'), nowTitle=document.getElementById('nowTitle');
-  const bbPrev=document.getElementById('bbPrev'), bbNext=document.getElementById('bbNext');
-  function setCurrent(i){
-    if(i===cur) return; cur=i;
-    links.forEach((a,k)=>a.classList.toggle('active',k===i));
-    if(i<0){nowNum.textContent='Sampul';nowTitle.textContent='Panduan Pegawai'}
-    else{nowNum.textContent=meta[i].raw;nowTitle.textContent=meta[i].title}
-    bbPrev.disabled=i<=0; bbNext.disabled=i>=meta.length-1;
-    if(mqDesk.matches && links[i]){
-      const box=document.getElementById('sidebarInner'), a=links[i];
-      const top=a.offsetTop-box.offsetTop;
-      if(top<box.scrollTop+40||top>box.scrollTop+box.clientHeight-80) box.scrollTo({top:top-box.clientHeight/3});
-    }
+  // ---------- Pengaturan ----------
+  const hostTheme=root.getAttribute('data-theme');
+  const prefs={size:store.get('bpk-size')||'m',theme:store.get('bpk-theme')||'system',lh:store.get('bpk-lh')||'normal',autohide:store.get('bpk-autohide')!=='0',progress:store.get('bpk-progress')!=='0',resume:store.get('bpk-resume')!=='0'};
+  function applyPrefs(){
+    if(prefs.size==='m') root.removeAttribute('data-size'); else root.setAttribute('data-size',prefs.size);
+    if(prefs.theme==='system'){ if(hostTheme) root.setAttribute('data-theme',hostTheme); else root.removeAttribute('data-theme') } else root.setAttribute('data-theme',prefs.theme);
+    if(prefs.lh==='normal') root.removeAttribute('data-lh'); else root.setAttribute('data-lh',prefs.lh);
+    root.classList.toggle('no-progress',!prefs.progress);
+    autoHide=prefs.autohide; autoResume=prefs.resume; if(!autoHide) dock.classList.remove('hide');
+    [['setSize',prefs.size],['setTheme',prefs.theme],['setLh',prefs.lh]].forEach(([id,v])=>document.querySelectorAll('#'+id+' button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v)));
+    document.getElementById('setAutoHide').setAttribute('aria-checked',prefs.autohide);
+    document.getElementById('setProgress').setAttribute('aria-checked',prefs.progress);
+    document.getElementById('setResume').setAttribute('aria-checked',prefs.resume);
+    const mc=document.querySelector('meta[name="theme-color"]'); if(mc) mc.setAttribute('content',getComputedStyle(root).getPropertyValue('--green').trim()||'#0e2b23');
   }
-  function goTo(i){if(meta[i]) meta[i].el.scrollIntoView()}
-  bbPrev.addEventListener('click',()=>goTo(cur<0?0:cur-1));
-  bbNext.addEventListener('click',()=>goTo(cur+1));
-  const bar=document.getElementById('progressBar'), pct=document.getElementById('progPct'), fill=document.getElementById('progFill'), toTop=document.getElementById('toTop');
-  let ticking=false;
-  function onScroll(){
-    ticking=false;
-    const y=window.scrollY, max=document.documentElement.scrollHeight-window.innerHeight;
-    const p=max>0?Math.min(1,Math.max(0,y/max)):0;
-    bar.style.width=(p*100)+'%'; fill.style.width=(p*100)+'%'; pct.textContent=Math.round(p*100)+'%';
-    toTop.classList.toggle('show',y>900);
-    const line=window.innerHeight*0.3;
-    let idx=-1;
-    for(let k=0;k<meta.length;k++){ if(meta[k].el.getBoundingClientRect().top<=line) idx=k; else break }
-    setCurrent(idx);
-  }
-  window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
-  window.addEventListener('resize',()=>{if(mqDesk.matches) closeNav(); onScroll()});
-  toTop.addEventListener('click',()=>window.scrollTo({top:0}));
-
-  // ---------- Ukuran huruf ----------
-  const sizes=['s','m','l']; let sz='m';
-  try{const v=localStorage.getItem('bpk-size'); if(sizes.includes(v)) sz=v}catch(e){}
-  function applySize(){if(sz==='m') document.documentElement.removeAttribute('data-size'); else document.documentElement.setAttribute('data-size',sz)}
-  applySize();
-  document.getElementById('sizeBtn').addEventListener('click',()=>{
-    sz=sizes[(sizes.indexOf(sz)+1)%3]; applySize(); try{localStorage.setItem('bpk-size',sz)}catch(e){}
-    document.getElementById('sizeBtn').title='Ukuran huruf: '+({s:'kecil',m:'sedang',l:'besar'})[sz];
-  });
+  function bindSeg(id,key,sk){document.querySelectorAll('#'+id+' button').forEach(b=>b.addEventListener('click',()=>{prefs[key]=b.dataset.v;store.set(sk,b.dataset.v);applyPrefs()}))}
+  bindSeg('setSize','size','bpk-size'); bindSeg('setTheme','theme','bpk-theme'); bindSeg('setLh','lh','bpk-lh');
+  function bindSw(id,key,sk){document.getElementById(id).addEventListener('click',()=>{prefs[key]=!prefs[key];store.set(sk,prefs[key]?'1':'0');if(key==='resume'&&!prefs[key])store.del('bpk-last');applyPrefs()})}
+  bindSw('setAutoHide','autohide','bpk-autohide'); bindSw('setProgress','progress','bpk-progress'); bindSw('setResume','resume','bpk-resume');
+  document.getElementById('setReset').addEventListener('click',()=>{['bpk-size','bpk-theme','bpk-lh','bpk-autohide','bpk-progress','bpk-resume'].forEach(store.del);Object.assign(prefs,{size:'m',theme:'system',lh:'normal',autohide:true,progress:true,resume:true});applyPrefs()});
+  applyPrefs();
 
   // ---------- Pencarian isi ----------
-  const panel=document.getElementById('searchPanel'), qIn=document.getElementById('q'), res=document.getElementById('results'), smeta=document.getElementById('searchMeta');
+  const qIn=document.getElementById('q'), res=document.getElementById('results'), smeta=document.getElementById('searchMeta');
   let index=null;
   const SEL='p, li, td, th, dt, dd, h2, h3, summary, .doc, .tl > div, .step span, .step b, .node';
   function buildIndex(){
@@ -2377,37 +3356,43 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
       });
     });
   }
-  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   function snippet(t,lt,q){
     const i=lt.indexOf(q); const a=Math.max(0,i-60), b=Math.min(t.length,i+q.length+90);
     return (a>0?'… ':'')+esc(t.slice(a,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length,b))+(b<t.length?' …':'');
   }
+  const SUGG=['cuti','lembur','THR','PKWT','pesangon','BPJS','guru','tunjangan'];
+  function emptyState(){
+    smeta.textContent='Ketik paling sedikit 2 huruf, atau pilih topik populer:';
+    res.innerHTML='<li class="chips">'+SUGG.map(s=>'<button type="button" data-s="'+s+'">'+s+'</button>').join('')+'</li>';
+  }
   let hits=[];
   function runSearch(){
     const q=qIn.value.trim().toLowerCase();
-    res.innerHTML='';
-    if(q.length<2){smeta.textContent='Ketik paling sedikit 2 huruf. Tekan Esc untuk menutup.';return}
+    if(q.length<2){emptyState();return}
     if(!index) buildIndex();
     const seen=new Set();
-    hits=index.filter(x=>{if(!x.lt.includes(q))return false; if(seen.has(x.t+x.m.id))return false; seen.add(x.t+x.m.id); return true});
+    hits=index.filter(x=>{if(!x.lt.includes(q))return false; const k=x.t+x.m.id; if(seen.has(k))return false; seen.add(k); return true});
     const shown=hits.slice(0,80);
     smeta.textContent=hits.length?(hits.length+' hasil'+(hits.length>80?' · menampilkan 80 pertama':'')):'';
     if(!hits.length){res.innerHTML='<li class="search-empty">Tidak ditemukan. Coba kata lain, misalnya “cuti”, “pesangon”, atau “guru”.</li>';return}
     res.innerHTML=shown.map((x,k)=>'<li><button type="button" data-k="'+k+'"><small>'+esc(x.m.raw)+' · '+esc(x.m.title)+'</small><span>'+snippet(x.t,x.lt,q)+'</span></button></li>').join('');
   }
+  emptyState();
   qIn.addEventListener('input',runSearch);
   res.addEventListener('click',e=>{
+    const sg=e.target.closest('button[data-s]'); if(sg){qIn.value=sg.dataset.s; runSearch(); qIn.focus(); return}
     const b=e.target.closest('button[data-k]'); if(!b) return;
     const x=hits[+b.dataset.k]; if(!x) return;
-    closeSearch();
+    closeSheet(true);
     let d=x.el.closest('details'); while(d){d.open=true; d=d.parentElement.closest('details')}
-    setTimeout(()=>{
-      x.el.scrollIntoView({block:'center'});
+    requestAnimationFrame(()=>{
+      x.el.scrollIntoView({behavior:'instant',block:'center'});
       x.el.classList.remove('flash'); void x.el.offsetWidth; x.el.classList.add('flash');
-    },30);
+      onScroll();
+    });
   });
   qIn.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){const f=res.querySelector('button[data-k]'); if(f) f.click()}
+    if(e.key==='Enter'){e.preventDefault(); const f=res.querySelector('button[data-k]'); if(f) f.click(); else qIn.blur()}
     if(e.key==='ArrowDown'){const f=res.querySelector('button'); if(f){e.preventDefault();f.focus()}}
   });
   res.addEventListener('keydown',e=>{
@@ -2415,20 +3400,28 @@ Diterima pada tanggal: [ ... ]   Tanda tangan pegawai: (__________)</div></div><
     if(e.key==='ArrowDown'&&i>-1&&items[i+1]){e.preventDefault();items[i+1].focus()}
     if(e.key==='ArrowUp'){e.preventDefault(); if(i>0) items[i-1].focus(); else qIn.focus()}
   });
-  function openSearch(){closeNav();body.classList.add('search-open');setTimeout(()=>{qIn.focus();qIn.select()},30)}
-  function closeSearch(){body.classList.remove('search-open')}
-  document.getElementById('searchBtn').addEventListener('click',openSearch);
-  document.getElementById('bbSearch').addEventListener('click',openSearch);
-  document.getElementById('searchClose').addEventListener('click',closeSearch);
   document.addEventListener('keydown',e=>{
     const typing=/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
-    if(e.key==='Escape'){closeSearch();closeNav()}
-    else if(!typing && (e.key==='/' || ((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'))){e.preventDefault();openSearch()}
+    if(e.key==='Escape') closeSheet();
+    else if(!typing && (e.key==='/' || ((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'))){e.preventDefault();openSheet('searchPanel')}
   });
   orgInput.addEventListener('input',()=>{index=null});
 
+  // ---------- Lanjutkan membaca ----------
+  const toast=document.getElementById('toast');
+  function hideToast(){toast.classList.remove('show')}
+  document.getElementById('toastX').addEventListener('click',hideToast);
+
   onScroll();
-  if(location.hash){const t=document.getElementById(location.hash.slice(1)); if(t) setTimeout(()=>{t.scrollIntoView();onScroll()},60)}
+  if(location.hash){const t=document.getElementById(location.hash.slice(1)); if(t) setTimeout(()=>{t.scrollIntoView({behavior:'instant'});onScroll()},60)}
+  else if(autoResume){
+    const last=store.get('bpk-last'), m=meta.find(x=>x.id===last);
+    if(m && meta.indexOf(m)>1){
+      document.getElementById('toastText').innerHTML='Lanjutkan membaca <b>'+esc(m.raw)+' · '+esc(m.title)+'</b>?';
+      document.getElementById('toastGo').onclick=()=>{hideToast(); navigateTo(m.id)};
+      setTimeout(()=>toast.classList.add('show'),700); setTimeout(hideToast,9000);
+    }
+  }
 
   // ---------- Util ----------
   const rp=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
